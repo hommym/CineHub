@@ -14,7 +14,7 @@ import com.example.hommytv.retrofitdataclasses.MoviesList
 class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForListBasedRecyclerView.Holder>() {
     var context: Context?=null
     var data= arrayListOf<MoviesList>()
-    var section="Recent"
+
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -125,14 +125,22 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
         else{
 
-            for (id in data.genre_ids){
-                for (genre in TheViewModel.genreForSeries?.genres!!){
+            try{
+//                this code can throw a null pointer exception if genre_ids is null
+                for (id in data.genre_ids){
+                    for (genre in TheViewModel.genreForSeries?.genres!!){
 
-                    if (id==genre.id){
-                        holder.genreTextView.append("|${genre.name}")
-                        break
+                        if (id==genre.id){
+                            holder.genreTextView.append("|${genre.name}")
+                            break
+                        }
                     }
+
                 }
+            }
+            catch (e:NullPointerException){
+
+                holder.genreTextView.append("|Unknown")
 
             }
 

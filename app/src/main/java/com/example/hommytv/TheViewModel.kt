@@ -482,7 +482,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
    get() = _hasSearchRequestFinished
 
 //    searchResults holds the data returned from the request sent
-lateinit var searchResults:ArrayList<MoviesList>
+ var searchResults:ArrayList<MoviesList> = arrayListOf()
 
 
 
@@ -512,6 +512,7 @@ lateinit var searchResults:ArrayList<MoviesList>
 
             //checking if any of the element's property of the result property  is null(not yet implemented)
 
+
                     // setting the required data to search results
                      searchResults= response.body()!!.results
                     _hasSearchRequestFinished.value=true
@@ -537,6 +538,7 @@ lateinit var searchResults:ArrayList<MoviesList>
 
 
     }
+
 
     }
 
