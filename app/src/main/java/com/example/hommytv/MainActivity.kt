@@ -13,12 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.hommytv.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var views:ActivityMainBinding
     val viewModel:TheViewModel by viewModels()
+     lateinit var applicationInstance:App
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         views=ActivityMainBinding.inflate(layoutInflater)
@@ -27,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 //passing the the value for the context variable in the viewmodel
 viewModel.context=this@MainActivity
 
+//initialising application instance
+applicationInstance=application as App
 
 
 
@@ -36,21 +41,61 @@ viewModel.context=this@MainActivity
 
 
 
+//// the purpose of this condition is to prevent the log in fragment from being inserted when the
+////   activity restarts due user action like screen rotation ,changing of theme etc
+//        if(viewModel.currentFragmentSectionsLayout==null && viewModel.currentFragmentMainLayout==null){
+//
+////        adding login fragment only if both layout for holding fragment are not holding any
+
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                applicationInstance.objectOFLogInSessionDataStore.readData.collect{
+
+                    it[LoginSesionDataStore.key]?.let{data->
+//                    checking if user has already log in and if is true code below gtes executed
+                        if (data){
+
+//                making the views in the activity visible
+
+
+
+//                            showing loading spinner only if no network request has being made
+                            if(viewModel.returnedRecentMovies==null){
+                                views.loadingSpinner.visibility= View.VISIBLE
+                            }
 
 
 
 
+//             the purpose of this condition is to make the buttom nav bar visible as long as the
+//            the current fragment in the layout for section fragment
+//            is not profile fragment(this is for when the activity restarts)
+                            if(viewModel.currentFragmentSectionsLayout !is ProfileFragment){
+                                views.bottomNavigation.visibility=View.VISIBLE
+                            }
+
+//                            starting network request if no network request has being made yet
+//                            (this is for when the activity restarts)
+                            if(viewModel.returnedRecentMovies==null){
+                                //      start of network request to server for the home tab
+                                viewModel.gettingAllDataForHomeTabFromServer()
+                            }
+
+                        }
+                        else{
+//                   inserting logIn fragment if lodInSessionDataStore value is falsee or null
+                            fragmentInsertion(LogInFragment(),true)
+                        }
+                    }?: fragmentInsertion(LogInFragment(),true)
 
 
 
 
-// the purpose of this condition is to prevent the log in fragment from being inserted when the
-//   activity restarts due user action like screen rotation ,changing of theme etc
-        if(viewModel.currentFragmentSectionsLayout==null && viewModel.currentFragmentMainLayout==null){
+                }
 
-//        adding login fragment only if both layout for holding fragment are not holding any
-            fragmentInsertion(LogInFragment(),true)
-        }
+            }
+
+
 
 
 

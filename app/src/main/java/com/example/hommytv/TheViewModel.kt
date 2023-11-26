@@ -430,7 +430,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 //                    making request for series genre object in order to interpretate the genre ids
-                 val genre=RetrofitObject.networkRequestMethods.getGenreForSeries()
+                    val genre=RetrofitObject.networkRequestMethods.getGenreForSeries()
                     genre.enqueue(object :Callback<ContentType>{
                         override fun onResponse(
                             call: Call<ContentType>,
@@ -510,7 +510,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                    }
 
 
-            //checking if any of the element's property of the result property  is null(not yet implemented)
+            
 
 
                     // setting the required data to search results

@@ -1,5 +1,7 @@
 package com.example.hommytv
 
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,7 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.hommytv.databinding.FragmentLogInBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class LogInFragment : Fragment() {
@@ -15,7 +20,14 @@ class LogInFragment : Fragment() {
 
     lateinit var views:FragmentLogInBinding
     val viewModel:TheViewModel by activityViewModels()
+    var dataStoreObject:LoginSesionDataStore?=null
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+//        setting the dataSotreObject to the dataStore created when the application was installed
+        dataStoreObject=(context as MainActivity).applicationInstance.objectOFLogInSessionDataStore
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,6 +106,12 @@ class LogInFragment : Fragment() {
 
         //      start of network request to server for the home tab
         viewModel.gettingAllDataForHomeTabFromServer()
+
+//     setting logInSession to true if logIn is  in activity of this fragment
+requireActivity().lifecycleScope.launch (Dispatchers.IO){
+    dataStoreObject?.writeData(true)
+}
+
 
         parentFragmentManager.popBackStack()
 
