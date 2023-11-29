@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -51,51 +52,8 @@ class HomeFragment : Fragment() {
 
 
 
-//        inserting image into main image
-      val imgUri= viewModel.returnedImages.first().toUri().buildUpon()?.scheme("https")?.build()
-       views.homeMainImage1.load(imgUri){
-           placeholder(R.drawable.baseline_image_24)
-       }
-
-        val imgUri1= viewModel.returnedImages!![1].toUri().buildUpon()?.scheme("https")?.build()
-        views.homeMainImage2.load(imgUri1){
-            placeholder(R.drawable.baseline_image_24)
-        }
 
 
-//        codes for changing images when it is being swiped automatically
-        lifecycleScope.launch {
-
-            while (true){
-
-                var currentImageIndexInList=19
-                var imageViewToSetImage=views.homeMainImage1
-
-
-                while (currentImageIndexInList!=-1){
-                    delay(41000L)
-                    val imgUriT= viewModel.returnedImages!![currentImageIndexInList].toUri().buildUpon()?.scheme("https")?.build()
-                    imageViewToSetImage.load(imgUriT){
-                        placeholder(R.drawable.baseline_image_24)
-                    }
-
-                    if (imageViewToSetImage==views.homeMainImage1){
-
-                        imageViewToSetImage=views.homeMainImage2
-                    }
-                    else{
-
-                        imageViewToSetImage=views.homeMainImage1
-                    }
-
-                    currentImageIndexInList--
-                }
-
-
-            }
-
-
-        }
 
 
 
@@ -117,11 +75,81 @@ class HomeFragment : Fragment() {
 
 
 
+
+
+
+
+
+        viewModel.hasNetworkRequestFinished.observe(viewLifecycleOwner, Observer {
+
+            if(it){
+                //        making loading spinner disappear and nested view with all content appear
+                //        if network request has finished
+                views.loadingSpinner.visibility=View.GONE
+                views.nestedView.visibility=View.VISIBLE
+
+
+
+
+                //        inserting image into main image
+                val imgUri= viewModel.returnedImages.first().toUri().buildUpon()?.scheme("https")?.build()
+                views.homeMainImage1.load(imgUri){
+                    placeholder(R.drawable.baseline_image_24)
+                }
+
+                val imgUri1= viewModel.returnedImages!![1].toUri().buildUpon()?.scheme("https")?.build()
+                views.homeMainImage2.load(imgUri1){
+                    placeholder(R.drawable.baseline_image_24)
+                }
+
+
+//        codes for changing images when it is being swiped automatically
+                lifecycleScope.launch {
+
+                    while (true){
+
+                        var currentImageIndexInList=19
+                        var imageViewToSetImage=views.homeMainImage1
+
+
+                        while (currentImageIndexInList!=-1){
+                            delay(41000L)
+                            val imgUriT= viewModel.returnedImages!![currentImageIndexInList].toUri().buildUpon()?.scheme("https")?.build()
+                            imageViewToSetImage.load(imgUriT){
+                                placeholder(R.drawable.baseline_image_24)
+                            }
+
+                            if (imageViewToSetImage==views.homeMainImage1){
+
+                                imageViewToSetImage=views.homeMainImage2
+                            }
+                            else{
+
+                                imageViewToSetImage=views.homeMainImage1
+                            }
+
+                            currentImageIndexInList--
+                        }
+
+
+                    }
+
+
+                }
+
+
+
+
+
+
+
+
+
 //      instantiating the adapter class for recent
-        adapterRecentMovies= TheAdapter()
+                adapterRecentMovies= TheAdapter()
 //        adding adapter to recycler view
-        recyclerViewSetUp(views.recentMovieRecyclerView,adapterRecentMovies,
-        viewModel.returnedRecentMovies?.results!!)
+                recyclerViewSetUp(views.recentMovieRecyclerView,adapterRecentMovies,
+                    viewModel.returnedRecentMovies?.results!!)
 
 
 
@@ -131,11 +159,11 @@ class HomeFragment : Fragment() {
 
 
 //       instantiating the adapter class for top rated
-        adapterTopRatedSeries= TheAdapter()
-        adapterTopRatedSeries.section="Top Rated"
+                adapterTopRatedSeries= TheAdapter()
+                adapterTopRatedSeries.section="Top Rated"
 //        adding adapter to recycler view
-        recyclerViewSetUp( views.topRatedSeriesRecyclerView,adapterTopRatedSeries,
-        viewModel.returnedTopRatedSeries?.results!!)
+                recyclerViewSetUp( views.topRatedSeriesRecyclerView,adapterTopRatedSeries,
+                    viewModel.returnedTopRatedSeries?.results!!)
 
 
 
@@ -143,24 +171,22 @@ class HomeFragment : Fragment() {
 
 
 //       instantiating the adapter class for upcoming
-       adapterUpcomingMovies= TheAdapter()
-        adapterUpcomingMovies.section="Upcoming"
+                adapterUpcomingMovies= TheAdapter()
+                adapterUpcomingMovies.section="Upcoming"
 //        adding adapter to recycler view
-        recyclerViewSetUp(views.upcomingMovieRecyclerView,adapterUpcomingMovies,
-        viewModel.returnedUpcomingMovies?.results!!)
+                recyclerViewSetUp(views.upcomingMovieRecyclerView,adapterUpcomingMovies,
+                    viewModel.returnedUpcomingMovies?.results!!)
 
 
 
 // instantiating the adapter class for airing series
-        adapterAiringTvSeries= TheAdapter()
-        adapterAiringTvSeries.section="Airing"
-        recyclerViewSetUp(views.airingSeriesRecyclerView,adapterAiringTvSeries,
-        viewModel.returnedCurrentlyAiringSeries?.results!!)
+                adapterAiringTvSeries= TheAdapter()
+                adapterAiringTvSeries.section="Airing"
+                recyclerViewSetUp(views.airingSeriesRecyclerView,adapterAiringTvSeries,
+                    viewModel.returnedCurrentlyAiringSeries?.results!!)
+            }
 
-
-
-
-
+        })
 
 
     }

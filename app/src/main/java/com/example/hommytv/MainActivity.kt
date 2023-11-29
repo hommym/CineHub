@@ -41,31 +41,17 @@ applicationInstance=application as App
 
 
 
-//// the purpose of this condition is to prevent the log in fragment from being inserted when the
-////   activity restarts due user action like screen rotation ,changing of theme etc
-//        if(viewModel.currentFragmentSectionsLayout==null && viewModel.currentFragmentMainLayout==null){
-//
-////        adding login fragment only if both layout for holding fragment are not holding any
+
 
             lifecycleScope.launch(Dispatchers.IO) {
 
                 applicationInstance.objectOFLogInSessionDataStore.readData.collect{
 
-                    it[LoginSesionDataStore.key]?.let{data->
-//                    checking if user has already log in and if is true code below gtes executed
-                        if (data){
+    it[LoginSesionDataStore.key]?.let{data->
+//                    checking if user has already log in and if is true code below gets executed
+            if (data){
 
 //                making the views in the activity visible
-
-
-
-//                            showing loading spinner only if no network request has being made
-                            if(viewModel.returnedRecentMovies==null){
-                                views.loadingSpinner.visibility= View.VISIBLE
-                            }
-
-
-
 
 //             the purpose of this condition is to make the buttom nav bar visible as long as the
 //            the current fragment in the layout for section fragment
@@ -74,19 +60,29 @@ applicationInstance=application as App
                                 views.bottomNavigation.visibility=View.VISIBLE
                             }
 
-//                            starting network request if no network request has being made yet
-//                            (this is for when the activity restarts)
-                            if(viewModel.returnedRecentMovies==null){
-                                //      start of network request to server for the home tab
-                                viewModel.gettingAllDataForHomeTabFromServer()
+//               starting network request if no network request has being made yet
+//               (this is for when the activity restarts)
+                if(viewModel.returnedRecentMovies==null){
+                //      start of network request to server for the home tab
+                viewModel.gettingAllDataForHomeTabFromServer()
+
+
+                    //condition for checking id the layout for the home fragment is empty before insertion becuase it
+                    // might not be if the activity restarts
+                    if(viewModel.currentFragmentSectionsLayout==null){
+                        fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections)
+                    }
+
+
+
                             }
 
                         }
-                        else{
+            else{
 //                   inserting logIn fragment if lodInSessionDataStore value is falsee or null
-                            fragmentInsertion(LogInFragment(),true)
-                        }
-                    }?: fragmentInsertion(LogInFragment(),true)
+                    fragmentInsertion(LogInFragment(),true)
+                }
+    }?: fragmentInsertion(LogInFragment(),true)
 
 
 
@@ -153,7 +149,7 @@ applicationInstance=application as App
 
             if (it){
 //                making the views in the activity visible
-                views.loadingSpinner.visibility= View.VISIBLE
+
 
 //             the purpose of this condition is to make the buttom nav bar visible as long as the
 //            the current fragment in the layout for section fragment is not profile fragment
@@ -172,28 +168,6 @@ applicationInstance=application as App
 
 
 
-            viewModel.hasNetworkRequestFinished.observe(this@MainActivity, Observer {
-
-
-                Log.d("One request finish","Done Main")
-//           checking if all network request for home tab data has finished
-             if(it){
-
-//           insert home fragment and make loading spinner dissappear and make layout for holding
-//            the home fragement appear
-                 views.loadingSpinner.visibility= View.GONE
-                 views.layoutForSections.visibility=View.VISIBLE
-
-//condition for checking id the layout for the home fragment is empty before insertion becuase it
-// might not be if the activity restarts
-                 if(viewModel.currentFragmentSectionsLayout==null){
-                 fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections)
-                 }
-
-             }
-
-
-            })
 
 
 
