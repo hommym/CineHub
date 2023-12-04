@@ -1,6 +1,6 @@
 package com.example.hommytv
 
-import android.app.Application
+
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,9 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.hommytv.databinding.FragmentLogInBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 
 class LogInFragment : Fragment() {
@@ -26,7 +29,7 @@ class LogInFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 //        setting the dataSotreObject to the dataStore created when the application was installed
-        dataStoreObject=(context as MainActivity).applicationInstance.objectOFLogInSessionDataStore
+        dataStoreObject=App.objectOFLogInSessionDataStore
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,10 +113,22 @@ class LogInFragment : Fragment() {
 //     setting logInSession to true if logIn is  in activity of this fragment
 requireActivity().lifecycleScope.launch (Dispatchers.IO){
     dataStoreObject?.writeData(true)
+
+//    setting work equest for for login session(just for testing i might change)
+    val myWorkRequest= OneTimeWorkRequestBuilder<LoginSessionBackgroundWork>()
+        .setInitialDelay(24,TimeUnit.HOURS)
+        .build()
+
+//    registering the work request on the system through work manager(just for testing i might change)
+    WorkManager.getInstance(requireActivity()).enqueue(myWorkRequest)
+
+
+             parentFragmentManager.popBackStack()
+
 }
 
 
-        parentFragmentManager.popBackStack()
+
 
 
 

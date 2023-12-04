@@ -57,7 +57,10 @@ dependencies {
 
 //    Preference datastore
     implementation"androidx.datastore:datastore-preferences:1.0.0"
-    
+
+    //    work manager
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+
 
     // Coil
     implementation "io.coil-kt:coil:2.4.0"

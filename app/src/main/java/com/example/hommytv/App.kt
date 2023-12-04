@@ -12,8 +12,10 @@ private val Context.dataStore:DataStore<Preferences> by preferencesDataStore(nam
 
 class App():Application() {
 
-
+companion object{
     lateinit var objectOFLogInSessionDataStore:LoginSesionDataStore
+}
+
 
 
 
