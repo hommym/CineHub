@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E8040404"
+    tools:context=".SelectedMoviesOrSeriesFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/content_poster"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:scaleType="fitXY"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/content_title"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="The Boys"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                app:layout_constraintEnd_toEndOf="@+id/cardView2"
+                app:layout_constraintStart_toStartOf="@+id/cardView2"
+                app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+            <TextView
+                android:id="@+id/content_genre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="50dp"
+                android:text="Adventure"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_title" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#F32C2B2B"
+                app:cardCornerRadius="40dp"
+                app:layout_constraintEnd_toStartOf="@+id/textView18"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView18">
+
+                <TextView
+                    android:id="@+id/content_release_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2017"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:cardBackgroundColor="#F32C2B2B"
+                app:cardCornerRadius="40dp"
+                app:layout_constraintEnd_toStartOf="@+id/textView19"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView17"
+                app:layout_constraintTop_toBottomOf="@+id/content_genre">
+
+                <TextView
+                    android:id="@+id/content_rated_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18+"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#F32C2B2B"
+                app:cardCornerRadius="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView18"
+                app:layout_constraintTop_toTopOf="@+id/textView18">
+
+                <TextView
+                    android:id="@+id/content_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2:45:34"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <CheckBox
+                android:id="@+id/add_fav_checkbox"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:button="@drawable/favourite_checkbox_design"
+                app:buttonTint="#FFB702"
+                app:layout_constraintEnd_toStartOf="@+id/download_checkbox"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/watch_later_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+            <CheckBox
+                android:id="@+id/watch_later_checkbox"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:button="@drawable/watch_later_checkbox_design"
+                app:buttonTint="#FFB702"
+                app:layout_constraintEnd_toStartOf="@+id/add_fav_checkbox"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/add_fav_checkbox" />
+
+
+            <CheckBox
+                android:id="@+id/download_checkbox"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:button="@drawable/download_checkbox_design"
+                app:buttonTint="#FFB702"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/add_fav_checkbox"
+                app:layout_constraintTop_toTopOf="@+id/add_fav_checkbox" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch later"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/watch_later_checkbox"
+                app:layout_constraintStart_toStartOf="@+id/watch_later_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/watch_later_checkbox" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to favorite"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/add_fav_checkbox"
+                app:layout_constraintStart_toStartOf="@+id/add_fav_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/add_fav_checkbox" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Download"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/download_checkbox"
+                app:layout_constraintStart_toStartOf="@+id/download_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/download_checkbox" />
+
+            <TextView
+                android:id="@+id/content_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:ellipsize="end"
+                android:maxLines="10"
+                android:text="In both examples, R.drawable.custom_checkbox should be replaced with the actual drawable resource for your custom checkbox appearance.  Remember to customize the custom_checkbox drawable according to your design preferences, and you can use combinations of android:padding, android:drawableLeft, android:drawableRight, etc., to further adjust the appearance of the CheckBox."
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView22"
+                app:layout_constraintStart_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="More Like This"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/content_description"
+                app:layout_constraintTop_toBottomOf="@+id/content_description" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/textView24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView24"
+                app:layout_constraintTop_toTopOf="@+id/textView24" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/similar_content_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="350dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textView25"
+                app:layout_constraintStart_toStartOf="@+id/textView24"
+                app:layout_constraintTop_toBottomOf="@+id/textView25"
+                tools:listitem="@layout/design_for_items" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    <ImageView
+        android:id="@+id/loadingSpinnerForSelectedContent"
+        android:layout_width="30dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/loading_animation" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
