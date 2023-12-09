@@ -114,21 +114,16 @@ class LogInFragment : Fragment() {
 requireActivity().lifecycleScope.launch (Dispatchers.IO){
     dataStoreObject?.writeData(true)
 
+}
 //    setting work equest for for login session(just for testing i might change)
-    val myWorkRequest= OneTimeWorkRequestBuilder<LoginSessionBackgroundWork>()
-        .setInitialDelay(24,TimeUnit.HOURS)
-        .build()
+        val myWorkRequest= OneTimeWorkRequestBuilder<LoginSessionBackgroundWork>()
+            .setInitialDelay(24,TimeUnit.HOURS)
+            .build()
 
 //    registering the work request on the system through work manager(just for testing i might change)
-    WorkManager.getInstance(requireActivity()).enqueue(myWorkRequest)
+        WorkManager.getInstance(requireActivity()).enqueue(myWorkRequest)
 
-
-             parentFragmentManager.popBackStack()
-
-}
-
-
-
+        parentFragmentManager.popBackStack()
 
 
 
