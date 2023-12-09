@@ -68,27 +68,13 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
             if(context is MainActivity){
 
 //                setting the title and release dates or genres
-              when(section){
-                  "Recent"->{
+              when("movie"){
+                 currrentData.media_type ->{
 
                       settingGenre(holder,currrentData,"Movie")
                       movieTitle.text=currrentData.title
 
                   }
-
-                  "Top Rated"->{
-
-                      settingGenre(holder,currrentData,"Series")
-                      movieTitle.text=currrentData.original_name
-
-                  }
-
-                  "Upcoming"->{
-
-                      releaseDate.text = "Release Date:${currrentData.release_date}"
-                      movieTitle.text=currrentData.title
-                  }
-
 
                   else->{
 

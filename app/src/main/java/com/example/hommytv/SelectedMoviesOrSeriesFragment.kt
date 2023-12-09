@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import coil.load
 import com.example.hommytv.databinding.FragmentSelectedMoviesOrSeriesBinding
 import kotlinx.coroutines.flow.collect
@@ -20,6 +22,7 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
 
     lateinit var views:FragmentSelectedMoviesOrSeriesBinding
     val viewModel:TheViewModel by activityViewModels()
+    lateinit var adapter:TheAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,6 +36,15 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+//        setting adapter for recommendation section
+        adapter= TheAdapter()
+        adapter.context=requireActivity()
+
+//        setting up the format for recyclerview
+        views.similarContentRecyclerView.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+        views.similarContentRecyclerView.adapter=adapter
 
 //        setting image in imageview
         val imgUri=arguments?.getString("Poster")!!.toUri().buildUpon().scheme("https").build()
@@ -91,6 +103,8 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
 
 
 
+//                setting up adapter's data
+                adapter.data=it!!.recommendations
 
 //                making loadingspinner dissappear
                 views.loadingSpinnerForSelectedContent.visibility=View.GONE
