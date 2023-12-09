@@ -7,20 +7,20 @@
     android:background="#E8040404">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/view_click_for_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#E8040404"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#E8040404"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="#040404"
-            >
+            android:orientation="vertical">
 
 
             <androidx.cardview.widget.CardView
@@ -28,32 +28,29 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
+                android:background="#E8040404"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:background="#E8040404"
-                >
+                app:layout_constraintTop_toTopOf="parent">
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#E8040404"
-                    >
+                    android:background="#E8040404">
 
                     <ImageView
                         android:id="@+id/image_poster"
                         android:layout_width="230dp"
                         android:layout_height="250dp"
                         android:layout_gravity="center_horizontal"
+                        android:background="#E8040404"
                         android:scaleType="fitXY"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:srcCompat="@tools:sample/backgrounds/scenic"
-                        android:background="#E8040404"
-                        />
+                        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                     <CheckBox
                         android:id="@+id/checkBox2"
