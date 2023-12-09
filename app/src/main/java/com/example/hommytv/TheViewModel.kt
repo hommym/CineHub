@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.hommytv.networkrequest.RetrofitObject
 import com.example.hommytv.retrofitdataclasses.ContentFromServer
 import com.example.hommytv.retrofitdataclasses.ContentType
+import com.example.hommytv.retrofitdataclasses.MovieDetails
 import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -67,12 +68,28 @@ get() = _isCurrentFragmentProfile
     }
 
 
+
 //    all the value for _hasNetworkRequestForHomeFinished is set
 //    true when the last network request for home tab has finished
 private val _hasNetworkRequestForHomeFinished=MutableLiveData<Boolean>(false)
 
     val hasNetworkRequestFinished:LiveData<Boolean>
     get() = _hasNetworkRequestForHomeFinished
+
+
+
+//    for network request failure
+
+    private val _hasNetworkRequestFailed=MutableLiveData<Boolean>(false)
+
+    val hasNetworkRequestFailed:LiveData<Boolean>
+        get() = _hasNetworkRequestFailed
+
+
+
+
+
+
 
 //    returnedRecentMovies holds the data returned when the request getRecentMovies was sent
    var  returnedRecentMovies:ContentFromServer?=null
@@ -105,370 +122,444 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
         viewModelScope.launch {
 
-            coroutineScope {
 
-                launch(Dispatchers.IO) {
-                    //            network request for images and recent movies(with in the requestForImagesForMovies callback)
-                    val requestForImagesForMovies= RetrofitObject.networkRequestMethods.getImagesForMovies()
-                    requestForImagesForMovies.enqueue(object :Callback<ContentFromServer> {
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
-                            if(response.isSuccessful){
+           try {
+               coroutineScope {
 
-                                Log.d("One request finish","Done")
-                                var numberIterations=0
-                                for (item in response.body()?.results!!){
+                   launch(Dispatchers.IO) {
+                       Log.d("CoroutineError","Caught")
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(returnedImages.size==0){
+//            network request for images and recent movies(with in the requestForImagesForMovies callback)
+                           val requestForImagesForMovies= RetrofitObject.networkRequestMethods.getImagesForMovies()
+                           requestForImagesForMovies.enqueue(object :Callback<ContentFromServer> {
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+                                   if(response.isSuccessful){
 
-                                    val imageToAdd="https://image.tmdb.org/t/p/original${item.poster_path}"
-                                    if (numberIterations==10){
-                                        break
-                                    }
-                                    else if(imageToAdd in returnedImages){
-                                        continue
-                                    }
+                                       Log.d("One request finish","Done")
+                                       var numberIterations=0
+                                       for (item in response.body()?.results!!){
 
-                                    else{
+                                           val imageToAdd="https://image.tmdb.org/t/p/original${item.poster_path}"
+                                           if (numberIterations==10){
+                                               break
+                                           }
+                                           else if(imageToAdd in returnedImages){
+                                               continue
+                                           }
+
+                                           else{
 //                                        adding image url to list of images that is
-                                        returnedImages.add(imageToAdd)
-                                    }
+                                               returnedImages.add(imageToAdd)
+                                           }
 
-                                    numberIterations++
-                                }
-
-
-                            }
-                            else{
-                                Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
-                            }
+                                           numberIterations++
+                                       }
 
 
-                        }
-
-                        override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
-                            Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
-
-                        }
-
-                    })
+                                   }
+                                   else{
+                                       Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
+                                   }
 
 
-                    while (true){
+                               }
 
-                        if (returnedImages.size==10){
-                            break
-                        }
-                    }
+                               override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+//                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+                               }
 
-                    returnedImages
+                           })
+                       }
 
-                }
-                launch(Dispatchers.IO) {
-                    //            requestForImagesForSeries only adds Series poster's url to returnedImages
-                    val  requestForImagesForSeries=RetrofitObject.networkRequestMethods.getImagesForSeries()
-                    requestForImagesForSeries.enqueue(object :Callback<ContentFromServer> {
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
 
-                            if(response.isSuccessful){
-                                Log.d("One request finish","Done")
-                                var numberIterations=0
-                                for (item in response.body()?.results!!){
 
-                                    if (numberIterations==10){
-                                        break
-                                    }
+                       while (true){
+
+                           if (returnedImages.size==10){
+                               break
+                           }
+                       }
+
+
+
+                   }
+
+
+                   launch(Dispatchers.IO) {
+
+
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(returnedImages.size!=20){
+
+//            requestForImagesForSeries only adds Series poster's url to returnedImages
+                           val  requestForImagesForSeries=RetrofitObject.networkRequestMethods.getImagesForSeries()
+                           requestForImagesForSeries.enqueue(object :Callback<ContentFromServer> {
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+
+                                   if(response.isSuccessful){
+                                       Log.d("One request finish","Done")
+                                       var numberIterations=0
+                                       for (item in response.body()?.results!!){
+
+                                           if (numberIterations==10){
+                                               break
+                                           }
 //                           adding image url to list of images that is returnedImages
-                                    returnedImages.add("https://image.tmdb.org/t/p/original${item.poster_path}")
-                                    numberIterations++
-                                }
+                                           returnedImages.add("https://image.tmdb.org/t/p/original${item.poster_path}")
+                                           numberIterations++
+                                       }
 
-                            }
-                            else{
-                                Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
-                            }
-
-
-
-                        }
-
-                        override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
-
-                            Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
-                        }
-
-
-                    })
-
-                    while (true){
-
-                        if (returnedImages.size==20){
-                            break
-                        }
-                    }
+                                   }
+                                   else{
+                                       Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
+                                   }
 
 
 
+                               }
+
+                               override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+
+//                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+                               }
+
+
+                           })
+                       }
+
+
+                       while (true){
+
+                           if (returnedImages.size==20){
+                               break
+                           }
+                       }
 
 
 
+                   }
 
 
+                   launch (Dispatchers.IO){
 
-                    returnedImages
-                }
-                launch (Dispatchers.IO){
 
-                    //                                        request for currently airing tv series
-                    val requestForSeriesAiring=RetrofitObject.networkRequestMethods.getAiringTodaySeries()
-                    requestForSeriesAiring.enqueue(object:Callback<ContentFromServer>{
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
-                            if(response.isSuccessful){
-                                Log.d("One request finish","Done")
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(returnedCurrentlyAiringSeries==null){
+//                                        request for currently airing tv series
+                           val requestForSeriesAiring=RetrofitObject.networkRequestMethods.getAiringTodaySeries()
+                           requestForSeriesAiring.enqueue(object:Callback<ContentFromServer>{
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+                                   if(response.isSuccessful){
+                                       Log.d("One request finish","Done")
 //                        changing the posterpath and backdroppath into actual urls
-                                for (item in  response.body()?.results!!){
+                                       for (item in  response.body()?.results!!){
 
-                                    item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
-                                    item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
-
-
-                                }
-
-                                returnedCurrentlyAiringSeries=response.body()
+                                           item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                                           item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
 
 
+                                       }
 
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<ContentFromServer>,
-                            t: Throwable
-                        ) {
-                            Toast.makeText(context,"request for currently airing series failed",Toast.LENGTH_SHORT).show()
-                        }
+                                       returnedCurrentlyAiringSeries=response.body()
 
 
-                    })
+
+                                   }
+                               }
+
+                               override fun onFailure(
+                                   call: Call<ContentFromServer>,
+                                   t: Throwable
+                               ) {
+//                               Toast.makeText(context,"request for currently airing series failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+                               }
 
 
-                    while (true){
-                        if (returnedCurrentlyAiringSeries!=null){
-                            break
-                        }
-                    }
-                }
-                launch(Dispatchers.IO) {
+                           })
+                       }
 
-                    //                            request fo currently upcoming movies
-                    val requestForUpcomingMovies=  RetrofitObject.networkRequestMethods.getUpcomingMovies()
-                    requestForUpcomingMovies.enqueue(object :Callback<ContentFromServer>{
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
 
-                            if (response.isSuccessful){
 
-                                Log.d("One request finish","Done")
+                       while (true){
+                           if (returnedCurrentlyAiringSeries!=null){
+                               break
+                           }
+                       }
+                   }
+
+                   launch(Dispatchers.IO) {
+
+
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+
+                       if(returnedRecentMovies==null){
+                           //                            request fo currently upcoming movies
+                           val requestForUpcomingMovies=  RetrofitObject.networkRequestMethods.getUpcomingMovies()
+                           requestForUpcomingMovies.enqueue(object :Callback<ContentFromServer>{
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+
+                                   if (response.isSuccessful){
+
+                                       Log.d("One request finish","Done")
 //                        changing the posterpath and backdroppath into actual urls
-                                for (item in  response.body()?.results!!){
+                                       for (item in  response.body()?.results!!){
 
-                                    item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
-                                    item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
-
-
-                                }
-
-                                returnedUpcomingMovies=response.body()
-
-                            }
-                        }
+                                           item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                                           item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
 
 
-                        override fun onFailure(
-                            call: Call<ContentFromServer>,
-                            t: Throwable
-                        ) {
-                            Toast.makeText(context,"request for upcoming movies failed",Toast.LENGTH_SHORT).show()
-                        }
+                                       }
 
-                    })
+                                       returnedUpcomingMovies=response.body()
+
+                                   }
+                               }
 
 
-                    while (true){
-                        if (returnedUpcomingMovies!=null){
-                            break
-                        }
-                    }
-                }
-                launch(Dispatchers.IO) {
-//                    network request for top rated series
-                    val requestForTopRatedSeries= RetrofitObject.networkRequestMethods.getTopRatedSeries()
-                    requestForTopRatedSeries.enqueue(object:Callback<ContentFromServer> {
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
-                            if (response.isSuccessful) {
+                               override fun onFailure(
+                                   call: Call<ContentFromServer>,
+                                   t: Throwable
+                               ) {
+//                                   Toast.makeText(context,"request for upcoming movies failed",Toast.LENGTH_SHORT).show()
+
+                                   throw t
+                               }
+
+                           })
+
+                       }
 
 
-                                Log.d("One request finish", "Done")
+
+
+
+                       while (true){
+                           if (returnedUpcomingMovies!=null){
+                               break
+                           }
+                       }
+                   }
+
+                   launch(Dispatchers.IO) {
+
+
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(returnedTopRatedSeries==null){
+                           //                    network request for top rated series
+                           val requestForTopRatedSeries= RetrofitObject.networkRequestMethods.getTopRatedSeries()
+                           requestForTopRatedSeries.enqueue(object:Callback<ContentFromServer> {
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+                                   if (response.isSuccessful) {
+
+
+                                       Log.d("One request finish", "Done")
 //                        changing the posterpath and backdroppath into actual urls
-                                for (item in response.body()?.results!!) {
+                                       for (item in response.body()?.results!!) {
 
-                                    item.backdrop_path =
-                                        "https://image.tmdb.org/t/p/original${item.backdrop_path}"
-                                    item.poster_path =
-                                        "https://image.tmdb.org/t/p/original${item.poster_path}"
-
-
-                                }
-
-                                returnedTopRatedSeries = response.body()
+                                           item.backdrop_path =
+                                               "https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                                           item.poster_path =
+                                               "https://image.tmdb.org/t/p/original${item.poster_path}"
 
 
-                            }
-                        }
+                                       }
 
-                        override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
-
-                            Toast.makeText(context,"request for top rated series failed",Toast.LENGTH_SHORT).show()
-
-                        }
+                                       returnedTopRatedSeries = response.body()
 
 
-                    })
+                                   }
+                               }
 
-                    while (true){
-                        if (returnedTopRatedSeries!=null){
-                            break
-                        }
-                    }
-                }
-                launch(Dispatchers.IO) {
-                    //                                 request for recent movies
-                    val recentMovies=RetrofitObject.networkRequestMethods.getRecentMovies()
-                    recentMovies.enqueue(object:Callback<ContentFromServer> {
-                        override fun onResponse(
-                            call: Call<ContentFromServer>,
-                            response: Response<ContentFromServer>
-                        ) {
+                               override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+
+//                               Toast.makeText(context,"request for top rated series failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+
+                               }
 
 
-                            if (response.isSuccessful){
-                                Log.d("One request finish","Done")
+                           })
+                       }
+
+
+
+
+                       while (true){
+                           if (returnedTopRatedSeries!=null){
+                               break
+                           }
+                       }
+                   }
+
+                   launch(Dispatchers.IO) {
+
+
+
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(returnedRecentMovies==null){
+                           //                                 request for recent movies
+                           val recentMovies=RetrofitObject.networkRequestMethods.getRecentMovies()
+                           recentMovies.enqueue(object:Callback<ContentFromServer> {
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+
+
+                                   if (response.isSuccessful){
+                                       Log.d("One request finish","Done")
 //                        changing the posterpath and backdroppath into actual urls
-                                for (item in  response.body()?.results!!){
+                                       for (item in  response.body()?.results!!){
 
-                                    item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
-                                    item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
-
-
-                                }
-
-                                returnedRecentMovies=response.body()
-                            }
+                                           item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                                           item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
 
 
-                        }
+                                       }
 
-                        override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
-
-                            Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
-
-                        }
+                                       returnedRecentMovies=response.body()
+                                   }
 
 
-                    })
+                               }
 
-                    while (true){
-                        if (returnedRecentMovies!=null){
-                            break
-                        }
-                    }
-                }
-                launch(Dispatchers.IO){
+                               override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
+//                               Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+
+                               }
+
+
+                           })
+                       }
+
+
+
+                       while (true){
+                           if (returnedRecentMovies!=null){
+                               break
+                           }
+                       }
+                   }
+
+                   launch(Dispatchers.IO){
+
+
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(genreForMovie==null){
 //                    making request for movie genre object in order to interpretate the genre ids
-                    val genre=  RetrofitObject.networkRequestMethods.getGenreForMovie()
+                           val genre=  RetrofitObject.networkRequestMethods.getGenreForMovie()
+                           genre.enqueue(object :Callback<ContentType>{
+                               override fun onResponse(
+                                   call: Call<ContentType>,
+                                   response: Response<ContentType>
+                               ) {
 
-                    genre.enqueue(object :Callback<ContentType>{
-                            override fun onResponse(
-                                call: Call<ContentType>,
-                                response: Response<ContentType>
-                            ) {
+                                   if (response.isSuccessful){
+                                       genreForMovie=response.body()
+                                   }
+                               }
 
-                                if (response.isSuccessful){
-                                    genreForMovie=response.body()
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ContentType>, t: Throwable) {
-                                Toast.makeText(context,"request for movie genre failed",Toast.LENGTH_SHORT).show()
-                            }
-
-
-                        })
+                               override fun onFailure(call: Call<ContentType>, t: Throwable) {
+//                               Toast.makeText(context,"request for movie genre failed",Toast.LENGTH_SHORT).show()
+                                   throw t
+                               }
 
 
-                    while (true){
-                        if (genreForMovie!=null){
-                            break
-                        }
-                    }
-
-
-                }
-                launch(Dispatchers.IO) {
-
-
-//                    making request for series genre object in order to interpretate the genre ids
-                    val genre=RetrofitObject.networkRequestMethods.getGenreForSeries()
-                    genre.enqueue(object :Callback<ContentType>{
-                        override fun onResponse(
-                            call: Call<ContentType>,
-                            response: Response<ContentType>
-                        ) {
-
-                            if (response.isSuccessful){
-                                genreForSeries=response.body()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ContentType>, t: Throwable) {
-                            Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
-                        }
-
-
-                    })
-
-
-
-                    while (true){
-                        if (genreForSeries!=null){
-                            break
-                        }
-                    }
-
-                }
-
-                }
+                           })
+                       }
 
 
 
 
 
-                withContext(Dispatchers.Main){
+                       while (true){
+                           if (genreForMovie!=null){
+                               break
+                           }
+                       }
 
-                    _hasNetworkRequestForHomeFinished.value=true
-                }
+
+                   }
+
+                   launch(Dispatchers.IO) {
+//                     checking if this request had finished in a previous execution of the method
+//                       gettingAllDataFromServer
+                       if(genreForSeries==null){
+                           //                    making request for series genre object in order to interpretate the genre ids
+                           val genre=RetrofitObject.networkRequestMethods.getGenreForSeries()
+                           genre.enqueue(object :Callback<ContentType>{
+                               override fun onResponse(
+                                   call: Call<ContentType>,
+                                   response: Response<ContentType>
+                               ) {
+
+                                   if (response.isSuccessful){
+                                       genreForSeries=response.body()
+                                   }
+                               }
+
+                               override fun onFailure(call: Call<ContentType>, t: Throwable) {
+//                               Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
+                                   throw  t
+                               }
+
+
+                           })
+                       }
+
+
+
+
+
+                       while (true){
+                           if (genreForSeries!=null){
+                               break
+                           }
+
+                       }
+
+                   }
+
+               }
+               _hasNetworkRequestForHomeFinished.value=true
+           }
+           catch (e:Throwable){
+
+               Log.d("CoroutineError","Caught")
+
+               _hasNetworkRequestFailed.value=true
+           }
+
+
+
 
             }
 
@@ -490,40 +581,41 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //    the method to execute for searches
     fun gettingSearchResults(keyword:String){
 
-        val search= RetrofitObject.networkRequestMethods.getSearchResults(keyword)
 
+    try {
+        val search= RetrofitObject.networkRequestMethods.getSearchResults(keyword)
 //     sending request to server
         search.enqueue(object :Callback<ContentFromServer>{
             override fun onResponse(
                 call: Call<ContentFromServer>,
                 response: Response<ContentFromServer>
             ) {
-               if (response.isSuccessful){
+                if (response.isSuccessful){
 
-                   //  changing the posterpath and backdroppath into actual urls
-                   for (item in  response.body()?.results!!){
+                    //  changing the posterpath and backdroppath into actual urls
+                    for (item in  response.body()?.results!!){
 
-                       item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
-                       item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
-
-
-                   }
+                        item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                        item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
 
 
-            
+                    }
+
+
+
 
 
                     // setting the required data to search results
-                     searchResults= response.body()!!.results
+                    searchResults= response.body()!!.results
                     _hasSearchRequestFinished.value=true
 
 
-               }
+                }
 
                 else{
 
-                   Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
-               }
+                    Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
+                }
 
 
 
@@ -535,10 +627,54 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
         })
+    }
+    catch (e:Exception){
+
+        _hasNetworkRequestFailed.value=true
+
+    }
+
+
 
 
     }
 
 
+
+
+     val movieInfo= MutableSharedFlow<MovieDetails?>()
+
+//    the method for getting movie or tv details
+    fun getMovieDetails(movieId:Int?,mediaType:String){
+
+
+        val movieDetails=RetrofitObject.networkRequestMethods.getMovieDetails(movieId = movieId,mediaType=mediaType)
+
+        movieDetails.enqueue(object :Callback<MovieDetails>{
+            override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
+
+                if(response.isSuccessful){
+
+                   viewModelScope.launch {
+
+                       movieInfo.emit(response.body())
+                   }
+
+
+                }
+                else{
+                    Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+            override fun onFailure(call: Call<MovieDetails>, t: Throwable) {
+                Toast.makeText(context,"Could not get details",Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+
+    }
     }
 

@@ -5,55 +5,158 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import coil.load
+import com.example.hommytv.databinding.FragmentSelectedMoviesOrSeriesBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import okhttp3.internal.format
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SelectedMoviesOrSeriesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SelectedMoviesOrSeriesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
+
+    lateinit var views:FragmentSelectedMoviesOrSeriesBinding
+    val viewModel:TheViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_selected_movies_or_series, container, false)
+
+        views= FragmentSelectedMoviesOrSeriesBinding.inflate(inflater, container, false)
+        return views.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SelectedMoviesOrSeriesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SelectedMoviesOrSeriesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//        setting image in imageview
+        val imgUri=arguments?.getString("Poster")!!.toUri().buildUpon().scheme("https").build()
+        views.contentPoster.load(imgUri)
+
+//        setting genre
+        views.contentGenre.text=arguments?.getString("Genre")
+
+
+//       setting overview
+        views.contentDescription.text=arguments?.getString("Overview")
+
+
+
+
+
+
+        lifecycleScope.launch {
+
+
+            viewModel.movieInfo.collect{
+
+
+
+
+
+//                getting MovieDetails object and setting data to the appropraite views
+
+            views.contentTitle.text=if (it?.title!=null){
+            it.title
             }
+            else{
+            it?.original_name
+            }
+
+
+            views.contentReleaseYear.text= if(it?.release_date!=null){
+                it.release_date
+            }
+                else{
+                    it?.first_air_date
+            }
+
+            views.contentRatedAge.text=if(it?.adult==true){
+                "18+"
+            }
+                else{
+                    "14+"
+            }
+
+            views.contentDuration.text= if(arguments?.getString("MediaType")=="movie"){
+                minutesToStandardTime(it?.runtime)
+            }else{
+                "Seasons:${it?.number_of_seasons}"
+            }
+
+
+
+
+//                making loadingspinner dissappear
+                views.loadingSpinnerForSelectedContent.visibility=View.GONE
+
+                views.nestedView.visibility=View.VISIBLE
+            }
+        }
+
+//        sending request to server for movie or series details
+        viewModel.getMovieDetails(arguments?.getInt("Movie_Id"),
+            arguments?.getString("MediaType")!!
+        )
+
+
     }
+
+
+    private fun minutesToStandardTime(minutes:Int?):String{
+        val hours=(minutes?.toDouble()?.div(60.0)).toString()
+        var hoursToUse=""
+        var remainingMinutes=""
+        var seconds=""
+        var hasDotCome=false
+        var counter=0
+
+        for (num in hours){
+
+            if (num!='.' && !hasDotCome){
+                hoursToUse += "$num"
+
+            }
+            else if (hasDotCome){
+
+                if(counter<2){
+                    remainingMinutes+="$num"
+                }
+                else{
+                    if (counter>3){
+                        break
+                    }
+                    seconds+="$num"
+                }
+
+
+                counter++
+            }
+            else{
+                hasDotCome=true
+            }
+
+        }
+
+
+        if(remainingMinutes==""){
+            remainingMinutes="0"
+
+        }
+
+        if (seconds==""){
+            seconds="0"
+        }
+
+
+        return String.format("%2d:%02d:%02d",hoursToUse.toInt(),remainingMinutes.toInt(),seconds.toInt())
+
+    }
+
+
 }

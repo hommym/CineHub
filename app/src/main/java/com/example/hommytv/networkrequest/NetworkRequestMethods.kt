@@ -2,8 +2,10 @@ package com.example.hommytv.networkrequest
 
 import com.example.hommytv.retrofitdataclasses.ContentFromServer
 import com.example.hommytv.retrofitdataclasses.ContentType
+import com.example.hommytv.retrofitdataclasses.MovieDetails
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NetworkRequestMethods {
@@ -44,5 +46,8 @@ interface NetworkRequestMethods {
    @GET("/3/genre/movie/list")
    fun getGenreForMovie(@Query("api_key")apiKey:String="5df9d8434a271efeaf152516c002398d"):Call<ContentType>
 
+
+   @GET("/3/{media_type}/{movie_id}")
+   fun getMovieDetails(@Path("movie_id")movieId:Int?,@Path("media_type")mediaType:String,@Query("api_key")apiKey:String="5df9d8434a271efeaf152516c002398d"):Call<MovieDetails>
 
 }

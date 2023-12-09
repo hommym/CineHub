@@ -1,11 +1,13 @@
 package com.example.hommytv
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -20,6 +22,7 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
         val poster:ImageView= itemView.findViewById(R.id.image_poster)
         val movieTitle:TextView=itemView.findViewById(R.id.movie_title)
+        val itemContainer:CardView=itemView.findViewById(R.id.view_click_for_details)
 
 //        (Somtimes we use this textView for holding genre)
         val releaseDate:TextView=itemView.findViewById(R.id.releaseDate)
@@ -50,6 +53,16 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
                 placeholder(R.drawable.baseline_image_24)
 
             }
+
+//            setting mediatype
+            if(currrentData.original_name==null){
+
+                currrentData.media_type="movie"
+            }
+            else{
+                currrentData.media_type="tv"
+            }
+
 
 //            checking f adapter is being used in main activity
             if(context is MainActivity){
@@ -90,6 +103,26 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
 
 
+            itemContainer.setOnClickListener {
+
+//       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
+
+                val nextFrag=SelectedMoviesOrSeriesFragment()
+                val bundleObject=Bundle()
+
+                bundleObject.putString("Poster",currrentData.poster_path)
+                bundleObject.putInt("Movie_Id",currrentData.id)
+                bundleObject.putString("Genre",holder.releaseDate.text.toString())
+                bundleObject.putString("Overview",currrentData.overview)
+                bundleObject.putString("MediaType",currrentData.media_type)
+                nextFrag.arguments=bundleObject
+
+                fragTransaction.replace( R.id.layout_for_sections,nextFrag)
+                fragTransaction.addToBackStack(null)
+
+                fragTransaction.commit()
+            }
 
 
 
