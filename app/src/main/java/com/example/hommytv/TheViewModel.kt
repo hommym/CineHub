@@ -16,6 +16,8 @@ import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,10 +73,10 @@ get() = _isCurrentFragmentProfile
 
 //    all the value for _hasNetworkRequestForHomeFinished is set
 //    true when the last network request for home tab has finished
-private val _hasNetworkRequestForHomeFinished=MutableLiveData<Boolean>(false)
+//private val _hasNetworkRequestForHomeFinished=MutableLiveData<Boolean>(false)
 
-    val hasNetworkRequestFinished:LiveData<Boolean>
-    get() = _hasNetworkRequestForHomeFinished
+    val hasNetworkRequestFinished= MutableSharedFlow<Boolean>()
+
 
 
 
@@ -123,10 +125,11 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
         viewModelScope.launch {
 
 
+
            try {
                coroutineScope {
 
-                   launch(Dispatchers.IO) {
+
                        Log.d("CoroutineError","Caught")
 //                     checking if this request had finished in a previous execution of the method
 //                       gettingAllDataFromServer
@@ -170,7 +173,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                }
 
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
-//                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
                                    throw t
                                }
 
@@ -179,19 +182,12 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-
-                           if (returnedImages.size==10){
-                               break
-                           }
-                       }
+//
 
 
 
-                   }
 
 
-                   launch(Dispatchers.IO) {
 
 
 //                     checking if this request had finished in a previous execution of the method
@@ -219,6 +215,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                            numberIterations++
                                        }
 
+
                                    }
                                    else{
                                        Toast.makeText(context,"${response.code()}",Toast.LENGTH_SHORT).show()
@@ -230,7 +227,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
-//                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
                                    throw t
                                }
 
@@ -239,19 +236,14 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                        }
 
 
-                       while (true){
-
-                           if (returnedImages.size==20){
-                               break
-                           }
-                       }
+//
 
 
 
-                   }
 
 
-                   launch (Dispatchers.IO){
+
+
 
 
 //                     checking if this request had finished in a previous execution of the method
@@ -286,7 +278,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                    call: Call<ContentFromServer>,
                                    t: Throwable
                                ) {
-//                               Toast.makeText(context,"request for currently airing series failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for currently airing series failed",Toast.LENGTH_SHORT).show()
                                    throw t
                                }
 
@@ -296,20 +288,16 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-                           if (returnedCurrentlyAiringSeries!=null){
-                               break
-                           }
-                       }
-                   }
+//
 
-                   launch(Dispatchers.IO) {
+
+
 
 
 //                     checking if this request had finished in a previous execution of the method
 //                       gettingAllDataFromServer
 
-                       if(returnedRecentMovies==null){
+                       if(returnedUpcomingMovies==null){
                            //                            request fo currently upcoming movies
                            val requestForUpcomingMovies=  RetrofitObject.networkRequestMethods.getUpcomingMovies()
                            requestForUpcomingMovies.enqueue(object :Callback<ContentFromServer>{
@@ -332,6 +320,8 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                        returnedUpcomingMovies=response.body()
 
+
+
                                    }
                                }
 
@@ -340,7 +330,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                    call: Call<ContentFromServer>,
                                    t: Throwable
                                ) {
-//                                   Toast.makeText(context,"request for upcoming movies failed",Toast.LENGTH_SHORT).show()
+                                   Toast.makeText(context,"request for upcoming movies failed",Toast.LENGTH_SHORT).show()
 
                                    throw t
                                }
@@ -353,14 +343,10 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-                           if (returnedUpcomingMovies!=null){
-                               break
-                           }
-                       }
-                   }
+//
 
-                   launch(Dispatchers.IO) {
+
+
 
 
 //                     checking if this request had finished in a previous execution of the method
@@ -391,12 +377,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                        returnedTopRatedSeries = response.body()
 
 
+
                                    }
                                }
 
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
-//                               Toast.makeText(context,"request for top rated series failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for top rated series failed",Toast.LENGTH_SHORT).show()
                                    throw t
 
                                }
@@ -408,14 +395,10 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-                           if (returnedTopRatedSeries!=null){
-                               break
-                           }
-                       }
-                   }
+//
 
-                   launch(Dispatchers.IO) {
+
+
 
 
 
@@ -450,7 +433,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
-//                               Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
                                    throw t
 
                                }
@@ -461,14 +444,10 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-                           if (returnedRecentMovies!=null){
-                               break
-                           }
-                       }
-                   }
+//
 
-                   launch(Dispatchers.IO){
+
+
 
 
 //                     checking if this request had finished in a previous execution of the method
@@ -485,10 +464,11 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                    if (response.isSuccessful){
                                        genreForMovie=response.body()
                                    }
+
                                }
 
                                override fun onFailure(call: Call<ContentType>, t: Throwable) {
-//                               Toast.makeText(context,"request for movie genre failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for movie genre failed",Toast.LENGTH_SHORT).show()
                                    throw t
                                }
 
@@ -500,16 +480,11 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
-                       while (true){
-                           if (genreForMovie!=null){
-                               break
-                           }
-                       }
 
 
-                   }
 
-                   launch(Dispatchers.IO) {
+
+
 //                     checking if this request had finished in a previous execution of the method
 //                       gettingAllDataFromServer
                        if(genreForSeries==null){
@@ -524,10 +499,11 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                    if (response.isSuccessful){
                                        genreForSeries=response.body()
                                    }
+
                                }
 
                                override fun onFailure(call: Call<ContentType>, t: Throwable) {
-//                               Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
+                               Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
                                    throw  t
                                }
 
@@ -538,22 +514,29 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
 
+                   async(Dispatchers.IO) {
+                       while( genreForSeries==null || genreForMovie==null || returnedRecentMovies==null
+                           || returnedTopRatedSeries==null || returnedUpcomingMovies==null
+                           || returnedCurrentlyAiringSeries==null || returnedImages.size!=20 ){
 
-                       while (true){
-                           if (genreForSeries!=null){
-                               break
-                           }
-
+                           continue
                        }
+                   }.await()
+
+//
+
+                   launch {
+                       hasNetworkRequestFinished.emit(true)
 
                    }
 
                }
-               _hasNetworkRequestForHomeFinished.value=true
+
            }
            catch (e:Throwable){
 
                Log.d("CoroutineError","Caught")
+               Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
 
                _hasNetworkRequestFailed.value=true
            }
@@ -655,10 +638,43 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                 if(response.isSuccessful){
 
-                   viewModelScope.launch {
 
-                       movieInfo.emit(response.body())
-                   }
+
+                       val data=response.body()
+
+//                   getting recommended movie or series
+                       RetrofitObject.networkRequestMethods.getRecommendation(movieId = movieId,mediaType=mediaType)
+                           .enqueue(object :Callback<ContentFromServer>{
+                               override fun onResponse(
+                                   call: Call<ContentFromServer>,
+                                   response: Response<ContentFromServer>
+                               ) {
+                                   if(response.isSuccessful){
+
+                                     data!!.recommendations= response.body()!!.results
+       //                        changing the posterpath and backdroppath into actual urls
+                                       for (item in  data.recommendations){
+
+                                           item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                                           item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
+
+
+                                       }
+
+                                       viewModelScope.launch {
+                                           movieInfo.emit(data)
+                                       }
+                                   }
+                               }
+
+                               override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+                                   Toast.makeText(context,"Could not get details",Toast.LENGTH_SHORT).show()
+                               }
+
+                           })
+
+
+
 
 
                 }

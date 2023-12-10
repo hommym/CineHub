@@ -29,6 +29,9 @@ class HomeFragment : Fragment() {
     lateinit var adapterAiringTvSeries: TheAdapter
     val viewModel:TheViewModel by activityViewModels()
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,9 +55,28 @@ class HomeFragment : Fragment() {
 
 
 
+//      instantiating the adapter class for recent
+        adapterRecentMovies= TheAdapter()
+
+
+//       instantiating the adapter class for top rated
+        adapterTopRatedSeries= TheAdapter()
+        adapterTopRatedSeries.section="Top Rated"
 
 
 
+
+
+//       instantiating the adapter class for upcoming
+        adapterUpcomingMovies= TheAdapter()
+        adapterUpcomingMovies.section="Upcoming"
+
+
+
+
+// instantiating the adapter class for airing series
+        adapterAiringTvSeries= TheAdapter()
+        adapterAiringTvSeries.section="Airing"
 
 
 
@@ -75,118 +97,153 @@ class HomeFragment : Fragment() {
 
 
 
+//        only executes if request has being made and all data is avialable
+
+        if(viewModel.returnedImages.size>0){
+            settingDataToViews()
+        }
 
 
 
 
+        lifecycleScope.launch {
 
-        viewModel.hasNetworkRequestFinished.observe(viewLifecycleOwner, Observer {
+            viewModel.hasNetworkRequestFinished.collect{
+                if(it){
+                    settingDataToViews()
+                }
+
+            }
+
+
+            }
+
+
+        viewModel.hasNetworkRequestFailed.observe(viewLifecycleOwner, Observer {
 
             if(it){
-                //        making loading spinner disappear and nested view with all content appear
-                //        if network request has finished
-                views.loadingSpinner.visibility=View.GONE
-                views.nestedView.visibility=View.VISIBLE
+//                make no internet icon  and refresh button appear
+
+                setVisiblity(View.GONE,View.VISIBLE)
+
+
+            }
+
+        })
+
+
+
+        views.refreshButton.setOnClickListener {
+//                making spinner appear
+            setVisiblity(View.VISIBLE,View.GONE)
+
+        }
+
+
+        //      start of network request to server for the home tab
+        if(viewModel.returnedRecentMovies==null){
+            viewModel.gettingAllDataForHomeTabFromServer()
+        }
+
+
+    }
+
+
+    private fun settingDataToViews(){
+
+            //        making loading spinner disappear and nested view with all content appear
+            //        if network request has finished
+            views.loadingSpinner.visibility=View.GONE
+            views.nestedView.visibility=View.VISIBLE
 
 
 
 
-                //        inserting image into main image
-                val imgUri= viewModel.returnedImages.first().toUri().buildUpon()?.scheme("https")?.build()
-                views.homeMainImage1.load(imgUri){
-                    placeholder(R.drawable.baseline_image_24)
-                }
+            //        inserting image into main image
+            val imgUri= viewModel.returnedImages.first().toUri().buildUpon()?.scheme("https")?.build()
+            views.homeMainImage1.load(imgUri){
+                placeholder(R.drawable.baseline_image_24)
+            }
 
-                val imgUri1= viewModel.returnedImages!![1].toUri().buildUpon()?.scheme("https")?.build()
-                views.homeMainImage2.load(imgUri1){
-                    placeholder(R.drawable.baseline_image_24)
-                }
+            val imgUri1= viewModel.returnedImages!![1].toUri().buildUpon()?.scheme("https")?.build()
+            views.homeMainImage2.load(imgUri1){
+                placeholder(R.drawable.baseline_image_24)
+            }
 
 
 //        codes for changing images when it is being swiped automatically
-                lifecycleScope.launch {
+            lifecycleScope.launch {
 
-                    while (true){
+                while (true){
 
-                        var currentImageIndexInList=19
-                        var imageViewToSetImage=views.homeMainImage1
+                    var currentImageIndexInList=19
+                    var imageViewToSetImage=views.homeMainImage1
 
 
-                        while (currentImageIndexInList!=-1){
-                            delay(41000L)
-                            val imgUriT= viewModel.returnedImages!![currentImageIndexInList].toUri().buildUpon()?.scheme("https")?.build()
-                            imageViewToSetImage.load(imgUriT){
-                                placeholder(R.drawable.baseline_image_24)
-                            }
-
-                            if (imageViewToSetImage==views.homeMainImage1){
-
-                                imageViewToSetImage=views.homeMainImage2
-                            }
-                            else{
-
-                                imageViewToSetImage=views.homeMainImage1
-                            }
-
-                            currentImageIndexInList--
+                    while (currentImageIndexInList!=-1){
+                        delay(41000L)
+                        val imgUriT= viewModel.returnedImages!![currentImageIndexInList].toUri().buildUpon()?.scheme("https")?.build()
+                        imageViewToSetImage.load(imgUriT){
+                            placeholder(R.drawable.baseline_image_24)
                         }
 
+                        if (imageViewToSetImage==views.homeMainImage1){
 
+                            imageViewToSetImage=views.homeMainImage2
+                        }
+                        else{
+
+                            imageViewToSetImage=views.homeMainImage1
+                        }
+
+                        currentImageIndexInList--
                     }
 
 
                 }
 
 
-
-
-
-
-
-
-
-//      instantiating the adapter class for recent
-                adapterRecentMovies= TheAdapter()
-//        adding adapter to recycler view
-                recyclerViewSetUp(views.recentMovieRecyclerView,adapterRecentMovies,
-                    viewModel.returnedRecentMovies?.results!!)
-
-
-
-
-
-
-
-
-//       instantiating the adapter class for top rated
-                adapterTopRatedSeries= TheAdapter()
-                adapterTopRatedSeries.section="Top Rated"
-//        adding adapter to recycler view
-                recyclerViewSetUp( views.topRatedSeriesRecyclerView,adapterTopRatedSeries,
-                    viewModel.returnedTopRatedSeries?.results!!)
-
-
-
-
-
-
-//       instantiating the adapter class for upcoming
-                adapterUpcomingMovies= TheAdapter()
-                adapterUpcomingMovies.section="Upcoming"
-//        adding adapter to recycler view
-                recyclerViewSetUp(views.upcomingMovieRecyclerView,adapterUpcomingMovies,
-                    viewModel.returnedUpcomingMovies?.results!!)
-
-
-
-// instantiating the adapter class for airing series
-                adapterAiringTvSeries= TheAdapter()
-                adapterAiringTvSeries.section="Airing"
-                recyclerViewSetUp(views.airingSeriesRecyclerView,adapterAiringTvSeries,
-                    viewModel.returnedCurrentlyAiringSeries?.results!!)
             }
 
-        })
+
+
+
+
+
+
+
+
+
+//        adding adapter to recycler view
+            recyclerViewSetUp(views.recentMovieRecyclerView,adapterRecentMovies,
+                viewModel.returnedRecentMovies?.results!!)
+
+
+
+
+
+
+
+
+
+//        adding adapter to recycler view
+            recyclerViewSetUp( views.topRatedSeriesRecyclerView,adapterTopRatedSeries,
+                viewModel.returnedTopRatedSeries?.results!!)
+
+
+
+
+
+
+
+//        adding adapter to recycler view
+            recyclerViewSetUp(views.upcomingMovieRecyclerView,adapterUpcomingMovies,
+                viewModel.returnedUpcomingMovies?.results!!)
+
+
+
+            recyclerViewSetUp(views.airingSeriesRecyclerView,adapterAiringTvSeries,
+                viewModel.returnedCurrentlyAiringSeries?.results!!)
 
 
     }
@@ -204,6 +261,26 @@ viewAdapter.data=data
 //    setting the layout style and adapter for recycler view
 view.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
 view.adapter=viewAdapter
+
+    }
+
+//    setVisibility is for seting the visiblity of noInternet and refresh button and text
+    private fun setVisiblity(visibilityModeForSpinner:Int,visibilityModeForOthers:Int,order:String="First"){
+//if order=last spinner is executed last and it is first is executed first
+
+//    if(order=="First"){}
+        views.loadingSpinner.visibility=visibilityModeForSpinner
+        views.noInternetIcon.visibility=visibilityModeForOthers
+        views.textView13.visibility=visibilityModeForOthers
+        views.refreshButton.visibility=visibilityModeForOthers
+
+//    else{
+//        views.noInternetIcon.visibility=visibilityModeForOthers
+//        views.textView13.visibility=visibilityModeForOthers
+//        views.refreshButton.visibility=visibilityModeForOthers
+//        views.loadingSpinner.visibility=visibilityModeForSpinner
+//    }
+//
 
     }
 
