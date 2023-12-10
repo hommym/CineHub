@@ -122,33 +122,38 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 //        the default for realeaseDate textView
         holder.releaseDate.text="Genre:"
 
-         if (genreType=="Movie"){
+         if(data.genre_ids!=null){
 
-             for (id in data.genre_ids){
-                 for (genre in TheViewModel.genreForMovie?.genres!!){
+             if (genreType=="Movie"){
 
-                     if (id==genre.id){
-                         holder.releaseDate.append("|${genre.name}")
-                         break
+                 for (id in data.genre_ids){
+                     for (genre in TheViewModel.genreForMovie?.genres!!){
+
+                         if (id==genre.id){
+                             holder.releaseDate.append("|${genre.name}")
+                             break
+                         }
                      }
+
+                 }
+
+             }
+             else{
+                 for (id in data.genre_ids){
+                     for (genre in TheViewModel.genreForSeries?.genres!!){
+
+                         if (id==genre.id){
+                             holder.releaseDate.append("|${genre.name}")
+                             break
+                         }
+                     }
+
                  }
 
              }
 
          }
-         else{
-             for (id in data.genre_ids){
-                 for (genre in TheViewModel.genreForSeries?.genres!!){
 
-                     if (id==genre.id){
-                         holder.releaseDate.append("|${genre.name}")
-                         break
-                     }
-                 }
-
-             }
-
-         }
 
 
 

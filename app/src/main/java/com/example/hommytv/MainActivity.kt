@@ -45,7 +45,7 @@ applicationInstance=application as App
 
             lifecycleScope.launch(Dispatchers.IO) {
 
-                applicationInstance.objectOFLogInSessionDataStore.readData.collect{
+                App.objectOFLogInSessionDataStore.readData.collect{
 
     it[LoginSesionDataStore.key]?.let{data->
 //                    checking if user has already log in and if is true code below gets executed
@@ -70,7 +70,7 @@ applicationInstance=application as App
                     //condition for checking id the layout for the home fragment is empty before insertion becuase it
                     // might not be if the activity restarts
                     if(viewModel.currentFragmentSectionsLayout==null){
-                        fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections)
+                        fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections, addToBackStack = true)
                     }
 
 

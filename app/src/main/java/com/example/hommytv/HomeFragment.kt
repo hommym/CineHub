@@ -119,23 +119,28 @@ class HomeFragment : Fragment() {
             }
 
 
-        viewModel.hasNetworkRequestFailed.observe(viewLifecycleOwner, Observer {
+      lifecycleScope.launch {
+          viewModel.hasNetworkRequestFailed.collect{
 
-            if(it){
+              if(it){
 //                make no internet icon  and refresh button appear
 
-                setVisiblity(View.GONE,View.VISIBLE)
+                  setVisiblity(View.GONE,View.VISIBLE)
 
 
-            }
+              }
 
-        })
+          }
+      }
 
 
 
         views.refreshButton.setOnClickListener {
 //                making spinner appear
             setVisiblity(View.VISIBLE,View.GONE)
+
+//            sending request again
+            viewModel.gettingAllDataForHomeTabFromServer()
 
         }
 

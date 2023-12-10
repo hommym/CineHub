@@ -16,6 +16,7 @@ import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import retrofit2.Call
@@ -82,10 +83,16 @@ get() = _isCurrentFragmentProfile
 
 //    for network request failure
 
-    private val _hasNetworkRequestFailed=MutableLiveData<Boolean>(false)
+//    private val _hasNetworkRequestFailed=MutableLiveData<Boolean>(false)
 
-    val hasNetworkRequestFailed:LiveData<Boolean>
-        get() = _hasNetworkRequestFailed
+    val hasNetworkRequestFailed= MutableSharedFlow<Boolean>()
+     val coroutineErrorHandler= CoroutineExceptionHandler{context,error,->
+
+         viewModelScope.launch {
+             hasNetworkRequestFailed.emit(true)
+         }
+
+     }
 
 
 
@@ -119,14 +126,21 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
     }
 
+
     fun gettingAllDataForHomeTabFromServer(){
 
-
-        viewModelScope.launch {
-
+        var errorHolder:Throwable? =null
 
 
-           try {
+        val sharedMutex=Mutex()
+
+
+        viewModelScope.launch(coroutineErrorHandler) {
+
+
+
+
+
                coroutineScope {
 
 
@@ -174,7 +188,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
                                Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                   sharedMutex.withLock {
+
+                                       errorHolder=t
+                                   }
+
+                                   }
                                }
 
                            })
@@ -228,7 +248,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
                                Toast.makeText(context,"request for images failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
                                }
 
 
@@ -279,7 +305,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                    t: Throwable
                                ) {
                                Toast.makeText(context,"request for currently airing series failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
                                }
 
 
@@ -332,7 +364,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                ) {
                                    Toast.makeText(context,"request for upcoming movies failed",Toast.LENGTH_SHORT).show()
 
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
                                }
 
                            })
@@ -384,7 +422,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
                                Toast.makeText(context,"request for top rated series failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
 
                                }
 
@@ -434,7 +478,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
 
                                Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
 
                                }
 
@@ -469,7 +519,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                override fun onFailure(call: Call<ContentType>, t: Throwable) {
                                Toast.makeText(context,"request for movie genre failed",Toast.LENGTH_SHORT).show()
-                                   throw t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
                                }
 
 
@@ -504,7 +560,13 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                                override fun onFailure(call: Call<ContentType>, t: Throwable) {
                                Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
-                                   throw  t
+                                   viewModelScope.launch {
+                                       sharedMutex.withLock {
+
+                                           errorHolder=t
+                                       }
+
+                                   }
                                }
 
 
@@ -519,6 +581,9 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                            || returnedTopRatedSeries==null || returnedUpcomingMovies==null
                            || returnedCurrentlyAiringSeries==null || returnedImages.size!=20 ){
 
+                           if (errorHolder!=null){
+                               throw errorHolder as Throwable
+                           }
                            continue
                        }
                    }.await()
@@ -526,20 +591,15 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //
 
                    launch {
+
                        hasNetworkRequestFinished.emit(true)
 
                    }
 
                }
 
-           }
-           catch (e:Throwable){
 
-               Log.d("CoroutineError","Caught")
-               Toast.makeText(context,"request for series genre failed",Toast.LENGTH_SHORT).show()
 
-               _hasNetworkRequestFailed.value=true
-           }
 
 
 
@@ -565,7 +625,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
     fun gettingSearchResults(keyword:String){
 
 
-    try {
+
         val search= RetrofitObject.networkRequestMethods.getSearchResults(keyword)
 //     sending request to server
         search.enqueue(object :Callback<ContentFromServer>{
@@ -610,12 +670,8 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 
         })
-    }
-    catch (e:Exception){
 
-        _hasNetworkRequestFailed.value=true
 
-    }
 
 
 

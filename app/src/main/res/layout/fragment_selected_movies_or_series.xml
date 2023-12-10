@@ -9,13 +9,15 @@
     tools:context=".SelectedMoviesOrSeriesFragment">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
                 <ImageView
                     android:id="@+id/content_poster"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="350dp"
                     android:scaleType="fitXY"
                     tools:src="@tools:sample/backgrounds/scenic" />
             </androidx.cardview.widget.CardView>

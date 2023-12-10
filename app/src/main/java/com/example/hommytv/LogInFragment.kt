@@ -107,8 +107,7 @@ class LogInFragment : Fragment() {
         viewModel.logIntoAcount(views.loginEmail.text.toString(),views.loginPassword.text.toString())
 
 
-        //      start of network request to server for the home tab
-        viewModel.gettingAllDataForHomeTabFromServer()
+
 
 //     setting logInSession to true if logIn is  in activity of this fragment
 requireActivity().lifecycleScope.launch (Dispatchers.IO){
