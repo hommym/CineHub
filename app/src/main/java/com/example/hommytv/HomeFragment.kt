@@ -46,11 +46,22 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
-
 //        setting shared view transition name
         ViewCompat.setTransitionName(views.profileImage,"homefrag_profile_image")
+
+        lifecycleScope.launch {
+
+            viewModel.hasNetworkRequestFinished.collect{
+                if(it){
+                    settingDataToViews()
+                }
+
+            }
+
+
+        }
+
+
 
 
 
@@ -98,25 +109,22 @@ class HomeFragment : Fragment() {
 
 
 //        only executes if request has being made and all data is avialable
+        viewModel.apply {
 
-        if(viewModel.returnedImages.size>0){
-            settingDataToViews()
+            if( TheViewModel.genreForSeries !=null || TheViewModel.genreForMovie !=null || returnedRecentMovies!=null
+                || returnedTopRatedSeries!=null || returnedUpcomingMovies!=null
+                || returnedCurrentlyAiringSeries!=null || returnedImages.size>=20 ){
+
+                settingDataToViews()
+            }
+
         }
 
 
 
 
-        lifecycleScope.launch {
-
-            viewModel.hasNetworkRequestFinished.collect{
-                if(it){
-                    settingDataToViews()
-                }
-
-            }
 
 
-            }
 
 
       lifecycleScope.launch {
@@ -145,10 +153,19 @@ class HomeFragment : Fragment() {
         }
 
 
-        //      start of network request to server for the home tab
-        if(viewModel.returnedRecentMovies==null){
-            viewModel.gettingAllDataForHomeTabFromServer()
+        //      start of network request to server for the home tab no data or some data is not yet avialable
+        viewModel.apply {
+
+            if( TheViewModel.genreForSeries ==null || TheViewModel.genreForMovie ==null || returnedRecentMovies==null
+                || returnedTopRatedSeries==null || returnedUpcomingMovies==null
+                || returnedCurrentlyAiringSeries==null || returnedImages.size!=20 ){
+
+                gettingAllDataForHomeTabFromServer()
+            }
         }
+
+
+
 
 
     }
