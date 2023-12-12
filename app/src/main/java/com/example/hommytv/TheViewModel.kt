@@ -149,7 +149,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(returnedImages.size==0){
 //            network request for images and recent movies(with in the requestForImagesForMovies callback)
-                           val requestForImagesForMovies= RetrofitObject.networkRequestMethods.getImagesForMovies()
+                           val requestForImagesForMovies= RetrofitObject.networkRequestMethods.getImages("movie")
                            requestForImagesForMovies.enqueue(object :Callback<ContentFromServer> {
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -215,7 +215,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                        if(returnedImages.size!=20){
 
 //            requestForImagesForSeries only adds Series poster's url to returnedImages
-                           val  requestForImagesForSeries=RetrofitObject.networkRequestMethods.getImagesForSeries()
+                           val  requestForImagesForSeries=RetrofitObject.networkRequestMethods.getImages("tv")
                            requestForImagesForSeries.enqueue(object :Callback<ContentFromServer> {
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -276,7 +276,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(returnedCurrentlyAiringSeries==null){
 //                                        request for currently airing tv series
-                           val requestForSeriesAiring=RetrofitObject.networkRequestMethods.getAiringTodaySeries()
+                           val requestForSeriesAiring=RetrofitObject.networkRequestMethods.getContent("tv","on_the_air")
                            requestForSeriesAiring.enqueue(object:Callback<ContentFromServer>{
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -331,7 +331,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
                        if(returnedUpcomingMovies==null){
                            //                            request fo currently upcoming movies
-                           val requestForUpcomingMovies=  RetrofitObject.networkRequestMethods.getUpcomingMovies()
+                           val requestForUpcomingMovies=  RetrofitObject.networkRequestMethods.getUpcomingContent("movie")
                            requestForUpcomingMovies.enqueue(object :Callback<ContentFromServer>{
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -391,7 +391,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(returnedTopRatedSeries==null){
                            //                    network request for top rated series
-                           val requestForTopRatedSeries= RetrofitObject.networkRequestMethods.getTopRatedSeries()
+                           val requestForTopRatedSeries= RetrofitObject.networkRequestMethods.getContent("tv","top_rated")
                            requestForTopRatedSeries.enqueue(object:Callback<ContentFromServer> {
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -450,7 +450,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(returnedRecentMovies==null){
                            //                                 request for recent movies
-                           val recentMovies=RetrofitObject.networkRequestMethods.getRecentMovies()
+                           val recentMovies=RetrofitObject.networkRequestMethods.getContent("movie","popular")
                            recentMovies.enqueue(object:Callback<ContentFromServer> {
                                override fun onResponse(
                                    call: Call<ContentFromServer>,
@@ -504,7 +504,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(genreForMovie==null){
 //                    making request for movie genre object in order to interpretate the genre ids
-                           val genre=  RetrofitObject.networkRequestMethods.getGenreForMovie()
+                           val genre=  RetrofitObject.networkRequestMethods.getGenre("movie")
                            genre.enqueue(object :Callback<ContentType>{
                                override fun onResponse(
                                    call: Call<ContentType>,
@@ -545,7 +545,7 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 //                       gettingAllDataFromServer
                        if(genreForSeries==null){
                            //                    making request for series genre object in order to interpretate the genre ids
-                           val genre=RetrofitObject.networkRequestMethods.getGenreForSeries()
+                           val genre=RetrofitObject.networkRequestMethods.getGenre("tv")
                            genre.enqueue(object :Callback<ContentType>{
                                override fun onResponse(
                                    call: Call<ContentType>,
@@ -745,6 +745,112 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
             }
 
         })
+
+
+    }
+
+
+
+    var selectedCategoryData = MutableSharedFlow<ArrayList<MoviesList>>()
+
+//    function for getting data when a category is selected in the category tab
+    fun getDataForSelectedCategory(mediaType:String,category:String){
+
+    if(category=="none"){
+        RetrofitObject.networkRequestMethods.getUpcomingContent(mediaType)
+            .enqueue(object:Callback<ContentFromServer> {
+                override fun onResponse(
+                    call: Call<ContentFromServer>,
+                    response: Response<ContentFromServer>
+                ) {
+
+
+                    if (response.isSuccessful){
+                        Log.d("One request finish","Done")
+//                        changing the posterpath and backdroppath into actual urls
+                        for (item in  response.body()?.results!!){
+
+                            item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                            item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
+
+
+                        }
+
+                        viewModelScope.launch {
+
+                            selectedCategoryData.emit(response.body()!!.results)
+                        }
+
+
+                    }
+
+
+                }
+
+                override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+
+                    Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
+
+                    viewModelScope.launch {
+                        hasNetworkRequestFailed.emit(true)
+                    }
+
+                }
+
+
+            })
+    }
+    else{
+
+        RetrofitObject.networkRequestMethods.getContent(mediaType,category)
+        .enqueue(object:Callback<ContentFromServer> {
+            override fun onResponse(
+                call: Call<ContentFromServer>,
+                response: Response<ContentFromServer>
+            ) {
+
+
+                if (response.isSuccessful){
+                    Log.d("One request finish","Done")
+//                        changing the posterpath and backdroppath into actual urls
+                    for (item in  response.body()?.results!!){
+
+                        item.backdrop_path="https://image.tmdb.org/t/p/original${item.backdrop_path}"
+                        item.poster_path="https://image.tmdb.org/t/p/original${item.poster_path}"
+
+
+                    }
+
+                    viewModelScope.launch {
+
+                        selectedCategoryData.emit(response.body()!!.results)
+                    }
+
+
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<ContentFromServer>, t: Throwable) {
+
+                Toast.makeText(context,"request for recent movies failed",Toast.LENGTH_SHORT).show()
+
+                viewModelScope.launch {
+                    hasNetworkRequestFailed.emit(true)
+                }
+
+            }
+
+
+        })
+
+        }
+
+
+
+
+
 
 
     }

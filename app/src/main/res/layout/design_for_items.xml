@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="240dp"
+    android:layout_width="180dp"
     android:layout_height="wrap_content"
     android:background="#E8040404">
 
@@ -10,9 +10,12 @@
         android:id="@+id/view_click_for_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:background="#E8040404"
         android:foreground="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,7 +27,7 @@
 
 
             <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
@@ -42,7 +45,7 @@
 
                     <ImageView
                         android:id="@+id/image_poster"
-                        android:layout_width="230dp"
+                        android:layout_width="0dp"
                         android:layout_height="250dp"
                         android:layout_gravity="center_horizontal"
                         android:background="#E8040404"
@@ -78,25 +81,29 @@
 
             <TextView
                 android:id="@+id/movie_title"
-                android:layout_width="230dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="The Boys"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/releaseDate"
-                android:layout_width="230dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Action | Horror"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

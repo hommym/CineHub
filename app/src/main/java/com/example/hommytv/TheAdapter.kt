@@ -93,7 +93,7 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
 //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
                 val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
-
+                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
                 val nextFrag=SelectedMoviesOrSeriesFragment()
                 val bundleObject=Bundle()
 
