@@ -287,7 +287,7 @@ view.adapter=viewAdapter
     }
 
 //    setVisibility is for seting the visiblity of noInternet and refresh button and text
-    private fun setVisiblity(visibilityModeForSpinner:Int,visibilityModeForOthers:Int,order:String="First"){
+    private fun setVisiblity(visibilityModeForSpinner:Int,visibilityModeForOthers:Int){
 //if order=last spinner is executed last and it is first is executed first
 
 //    if(order=="First"){}

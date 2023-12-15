@@ -38,6 +38,25 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+//        setting nested scroll view listner
+        views.nestedView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+
+            if(scrollY>600){
+                views.watchTrailerButton.visibility=View.INVISIBLE
+                views.watchTrailerFloatingButton.visibility=View.VISIBLE
+            }
+            else{
+
+                views.watchTrailerFloatingButton.visibility=View.INVISIBLE
+                views.watchTrailerButton.visibility=View.VISIBLE
+            }
+
+        }
+
+
+
+
 //        setting adapter for recommendation section
         adapter= TheAdapter()
         adapter.context=requireActivity()
@@ -110,6 +129,12 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
                 views.loadingSpinnerForSelectedContent.visibility=View.GONE
 
                 views.nestedView.visibility=View.VISIBLE
+
+                //making trailer button appear only if the trailer floating bar is invinsible
+                if(views.watchTrailerFloatingButton.visibility==View.INVISIBLE){
+                    views.watchTrailerButton.visibility=View.VISIBLE
+                }
+
             }
         }
 

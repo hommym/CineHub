@@ -52,10 +52,22 @@ class SelectedCategory : Fragment() {
 
 
 //          codes showing the views that appear during a network error(not implemented)
+               setVisiblity(View.GONE,View.VISIBLE)
 
            }
 
        }
+
+
+        views.refreshButton.setOnClickListener {
+
+//            making loading spinner appear as the views showing network error disappear
+            setVisiblity(View.VISIBLE,View.GONE)
+            //        making network request
+            viewModel.getDataForSelectedCategory(arguments?.getString("MediaType")!!,
+                arguments?.getString("Category")!!)
+
+        }
 
 
         //        setting adapter context
@@ -71,6 +83,19 @@ class SelectedCategory : Fragment() {
 //        making network request
         viewModel.getDataForSelectedCategory(arguments?.getString("MediaType")!!,
             arguments?.getString("Category")!!)
+
+
+
+    }
+
+
+
+    private fun setVisiblity(visibilityModeForSpinner:Int,visibilityModeForOthers:Int){
+
+        views.loadingSpinnerForSelectedCategory.visibility=visibilityModeForSpinner
+        views.noInternetIcon.visibility=visibilityModeForOthers
+        views.textView13.visibility=visibilityModeForOthers
+        views.refreshButton.visibility=visibilityModeForOthers
 
 
 

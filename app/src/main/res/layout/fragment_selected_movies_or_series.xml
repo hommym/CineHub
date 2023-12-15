@@ -8,6 +8,29 @@
     android:background="#E8040404"
     tools:context=".SelectedMoviesOrSeriesFragment">
 
+    <Button
+        android:id="@+id/watch_trailer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="Watch Trailer"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/watch_trailer_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:clickable="true"
+        android:src="@drawable/round_play_circle_this"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_view"
         android:layout_width="0dp"
@@ -22,6 +45,21 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="315dp"
+                android:clickable="true"
+                android:src="@drawable/round_play_circle_this"
+                app:backgroundTint="#E6A90E"
+                app:layout_constraintBottom_toTopOf="@+id/content_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#E8040404"
+                />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
@@ -259,6 +297,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
     <ImageView
         android:id="@+id/loadingSpinnerForSelectedContent"
         android:layout_width="30dp"
@@ -267,7 +306,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/loading_animation" />
+        app:srcCompat="@drawable/loading_animation"
+        tools:visibility="gone" />
 
 
 

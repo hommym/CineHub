@@ -43,6 +43,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_topbar"
-        app:srcCompat="@drawable/loading_animation" />
+        app:srcCompat="@drawable/loading_animation"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/no_internet_icon"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:src="@drawable/baseline_cloud_off_24"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network Error"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/no_internet_icon"
+        app:layout_constraintStart_toStartOf="@+id/no_internet_icon"
+        app:layout_constraintTop_toBottomOf="@+id/no_internet_icon"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/no_internet_icon"
+        app:layout_constraintStart_toStartOf="@+id/no_internet_icon"
+        app:layout_constraintTop_toBottomOf="@+id/textView13"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
