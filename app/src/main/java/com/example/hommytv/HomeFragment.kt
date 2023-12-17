@@ -50,6 +50,32 @@ class HomeFragment : Fragment() {
         ViewCompat.setTransitionName(views.profileImage,"homefrag_profile_image")
 
         lifecycleScope.launch {
+//            setting profile image if it exist
+            val dataStorObj= App.objectOFDataStore
+
+            dataStorObj.readData.collect{
+
+                if(it[AppDataStore.isProfileSet]==true){
+
+                    for (file in requireActivity().filesDir.listFiles()!!){
+                        if(file.name=="ProfileImage"){
+
+                            views.profileImage.setImageURI(file.absolutePath.toUri())
+
+                        }
+                    }
+
+
+
+                }
+
+            }
+
+
+        }
+
+
+        lifecycleScope.launch {
 
             viewModel.hasNetworkRequestFinished.collect{
                 if(it){

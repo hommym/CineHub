@@ -1,13 +1,8 @@
 package com.example.hommytv
 
-import android.app.SearchManager
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SearchRecentSuggestions
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,9 +40,9 @@ applicationInstance=application as App
 
             lifecycleScope.launch(Dispatchers.IO) {
 
-                App.objectOFLogInSessionDataStore.readData.collect{
+                App.objectOFDataStore.readData.collect{
 
-    it[LoginSesionDataStore.key]?.let{data->
+    it[AppDataStore.logInSessionKey]?.let{ data->
 //                    checking if user has already log in and if is true code below gets executed
             if (data){
 

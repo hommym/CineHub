@@ -13,7 +13,7 @@ private val Context.dataStore:DataStore<Preferences> by preferencesDataStore(nam
 class App():Application() {
 
 companion object{
-    lateinit var objectOFLogInSessionDataStore:LoginSesionDataStore
+    lateinit var objectOFDataStore:AppDataStore
 }
 
 
@@ -23,7 +23,7 @@ companion object{
     override fun onCreate() {
         super.onCreate()
 
-        objectOFLogInSessionDataStore=LoginSesionDataStore(dataStore)
+        objectOFDataStore=AppDataStore(dataStore)
     }
 
 

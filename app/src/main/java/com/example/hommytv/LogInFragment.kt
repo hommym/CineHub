@@ -23,13 +23,13 @@ class LogInFragment : Fragment() {
 
     lateinit var views:FragmentLogInBinding
     val viewModel:TheViewModel by activityViewModels()
-    var dataStoreObject:LoginSesionDataStore?=null
+    var dataStoreObject:AppDataStore?=null
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 //        setting the dataSotreObject to the dataStore created when the application was installed
-        dataStoreObject=App.objectOFLogInSessionDataStore
+        dataStoreObject=App.objectOFDataStore
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,7 +111,7 @@ class LogInFragment : Fragment() {
 
 //     setting logInSession to true if logIn is  in activity of this fragment
 requireActivity().lifecycleScope.launch (Dispatchers.IO){
-    dataStoreObject?.writeData(true)
+    dataStoreObject?.writeDataToLogInSession(true)
 
 }
 //    setting work equest for for login session(just for testing i might change)
