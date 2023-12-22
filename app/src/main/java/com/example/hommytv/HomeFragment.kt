@@ -139,7 +139,7 @@ class HomeFragment : Fragment() {
 
             if( TheViewModel.genreForSeries !=null || TheViewModel.genreForMovie !=null || returnedRecentMovies!=null
                 || returnedTopRatedSeries!=null || returnedUpcomingMovies!=null
-                || returnedCurrentlyAiringSeries!=null || returnedImages.size>=20 ){
+                || returnedCurrentlyAiringSeries!=null || returnedImages.size==20 ){
 
                 settingDataToViews()
             }
@@ -184,7 +184,7 @@ class HomeFragment : Fragment() {
 
             if( TheViewModel.genreForSeries ==null || TheViewModel.genreForMovie ==null || returnedRecentMovies==null
                 || returnedTopRatedSeries==null || returnedUpcomingMovies==null
-                || returnedCurrentlyAiringSeries==null || returnedImages.size!=20 ){
+                || returnedCurrentlyAiringSeries==null || returnedImages.size<20 ){
 
                 gettingAllDataForHomeTabFromServer()
             }

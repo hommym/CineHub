@@ -42,19 +42,27 @@ class TheViewModel(): ViewModel() {
     val hasLoggedIn: LiveData<Boolean>
     get() = _hasLoggedIn
 
+    //    _hasLogOut is variable for checking if users has succesfully loggedOut
+    private val _hasLoggedOut=MutableLiveData<Boolean>(false)
+
+    val hasLoggedOut: LiveData<Boolean>
+        get() = _hasLoggedOut
+
+    fun logOut(){
+
+        _hasLoggedOut.value=true
+    }
 
 // the purpose of this variable is to know when the current fragment is the profile fragmnet so that
 //so  that i could make the buttom nav bar disappear if profile fragment comes up.
 
-private val _isCurrentFragmentProfile= MutableSharedFlow<Boolean>()
-val isCurrentFragmentProfile:SharedFlow<Boolean>
-get() = _isCurrentFragmentProfile
+ val isCurrentFragmentProfile= MutableSharedFlow<Boolean>()
 
 // currentFragmentIsProfile is just used for setting the value of _isCurrentFragmentProfile
     fun setFragmentIsProfileValue(value:Boolean){
 
         viewModelScope.launch {
-            _isCurrentFragmentProfile.emit(value)
+            isCurrentFragmentProfile.emit(value)
         }
 
     }
@@ -579,10 +587,11 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                    async(Dispatchers.IO) {
                        while( genreForSeries==null || genreForMovie==null || returnedRecentMovies==null
                            || returnedTopRatedSeries==null || returnedUpcomingMovies==null
-                           || returnedCurrentlyAiringSeries==null || returnedImages.size!=20 ){
+                           || returnedCurrentlyAiringSeries==null || returnedImages.size<20 ){
 
                            if (errorHolder!=null){
                                throw errorHolder as Throwable
+
                            }
                            continue
                        }
@@ -590,7 +599,9 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
 
 //
 
+
                    launch {
+
 
                        hasNetworkRequestFinished.emit(true)
 
