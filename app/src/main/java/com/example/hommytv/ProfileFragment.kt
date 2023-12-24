@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionInflater
@@ -132,6 +133,19 @@ class ProfileFragment : Fragment() {
         views.setProfileImage.setOnClickListener {
 
             pickProfile.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
+        }
+
+        views.backButtonProfile.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+            viewModel.setFragmentIsProfileValue(false)
+        }
+
+        views.logoutButton.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+            viewModel.logOut()
 
         }
 

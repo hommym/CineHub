@@ -3,10 +3,13 @@ package com.example.hommytv
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.work.WorkManager
 import com.example.hommytv.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var views:ActivityMainBinding
     val viewModel:TheViewModel by viewModels()
-     lateinit var applicationInstance:App
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 viewModel.context=this@MainActivity
 
 //initialising application instance
-applicationInstance=application as App
+
 
 
 
@@ -65,7 +68,7 @@ applicationInstance=application as App
                     //condition for checking id the layout for the home fragment is empty before insertion becuase it
                     // might not be if the activity restarts
                     if(viewModel.currentFragmentSectionsLayout==null){
-                        fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections, addToBackStack = true)
+                        fragmentInsertion(HomeFragment(), layoutForInsertion = R.id.layout_for_sections)
                     }
 
 
@@ -75,11 +78,15 @@ applicationInstance=application as App
                         }
             else{
 //                   inserting logIn fragment if lodInSessionDataStore value is falsee or null
+                if(viewModel.currentFragmentMainLayout==null){
                     fragmentInsertion(LogInFragment(),true)
                 }
-    }?: fragmentInsertion(LogInFragment(),true)
-
-
+            }
+    }?: if(viewModel.currentFragmentMainLayout==null){
+        fragmentInsertion(LogInFragment(),true)
+    } else {
+        null
+    }
 
 
                 }
@@ -146,16 +153,44 @@ applicationInstance=application as App
 //                making the views in the activity visible
 
 
+
 //             the purpose of this condition is to make the buttom nav bar visible as long as the
 //            the current fragment in the layout for section fragment is not profile fragment
                 if(viewModel.currentFragmentSectionsLayout !is ProfileFragment){
                     views.bottomNavigation.visibility=View.VISIBLE
+
                 }
 
 
 
             }
 
+        })
+
+        viewModel.hasLoggedOut.observe(this@MainActivity, Observer {
+
+
+            if(it){
+
+//                poping current frag from stack
+
+                if(viewModel.currentFragmentSectionsLayout is HomeFragment){
+                    Toast.makeText(this@MainActivity,"It is",Toast.LENGTH_LONG).show()
+                }
+
+
+//                making nav bar disappear
+                views.bottomNavigation.visibility=View.GONE
+
+//                setting the data in loginSession dataStore to false
+                lifecycleScope.launch (Dispatchers.IO){
+                    App.objectOFDataStore.writeDataToLogInSession(false)
+
+                }
+//                cancelling LogIn session cancellation by work manager
+                WorkManager.getInstance(this@MainActivity).cancelAllWork()
+
+            }
         })
 
 

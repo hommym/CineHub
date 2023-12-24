@@ -47,6 +47,10 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
 
+//    media3
+    implementation "androidx.media3:media3-exoplayer:1.2.0"
+    implementation "androidx.media3:media3-ui:1.2.0"
+
 
     // Retrofit for making API requests
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

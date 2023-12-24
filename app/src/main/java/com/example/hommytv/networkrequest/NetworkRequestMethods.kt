@@ -65,4 +65,8 @@ interface NetworkRequestMethods {
 
    @GET("/3/{media_type}/{movie_id}/similar")
    fun getRecommendation(@Path("movie_id")movieId:Int?,@Path("media_type")mediaType:String,@Query("api_key")apiKey:String="5df9d8434a271efeaf152516c002398d"):Call<ContentFromServer>
+
+
+
+
 }

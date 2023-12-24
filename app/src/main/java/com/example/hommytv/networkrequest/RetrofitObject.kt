@@ -12,6 +12,7 @@ object RetrofitObject {
         .build()
 
 
+
 //    connecting retrofit instance with methods
     val networkRequestMethods:NetworkRequestMethods by lazy {
         retrofit.create(NetworkRequestMethods::class.java)
