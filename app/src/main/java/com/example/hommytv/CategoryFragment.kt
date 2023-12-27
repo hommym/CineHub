@@ -53,7 +53,7 @@ class CategoryFragment : Fragment() {
         views.inTheatresMovieButton.setOnClickListener {
 
             //            moving to Selected Category frag
-            movingToNextFrag(bundleObject,"movie","on_the_air", titleBarText = "Movies In Theatres")
+            movingToNextFrag(bundleObject,"movie","now_playing", titleBarText = "Movies In Theatres")
         }
 
 
