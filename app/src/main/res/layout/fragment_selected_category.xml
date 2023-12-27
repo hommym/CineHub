@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/category_topbar"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
+    <ProgressBar
         android:id="@+id/loadingSpinnerForSelectedCategory"
         android:layout_width="30dp"
         android:layout_height="50dp"
@@ -43,7 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_topbar"
-        app:srcCompat="@drawable/loading_animation"
         tools:visibility="invisible" />
 
     <ImageView

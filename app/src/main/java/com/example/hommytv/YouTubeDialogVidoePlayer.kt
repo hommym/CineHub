@@ -74,7 +74,7 @@ class YouTubeDialogVidoePlayer : DialogFragment() {
 
 
                                 if(responseX.isSuccessful){
-                                    Toast.makeText(requireActivity(),"id found",Toast.LENGTH_SHORT).show()
+//                                    Toast.makeText(requireActivity(),"id found",Toast.LENGTH_SHORT).show()
                                     dialog?.setCancelable(false)
 //                                    converting video srtring's escape characters into < and >
                                     var videoHtmlTag= responseX.body()!!.items[0].player.embedHtml
@@ -94,7 +94,7 @@ class YouTubeDialogVidoePlayer : DialogFragment() {
 
                                     views.webView.loadData(videoHtmlTag,"text/html","utf-8")
                                     views.webView.settings.javaScriptEnabled=true
-//                                    views.webView.webChromeClient= WebChromeClient()
+
 
                                 }
 

@@ -39,8 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,8 +57,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="#E8040404"
-                />
+                app:tint="#E8040404" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
@@ -298,16 +296,14 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <ImageView
+    <ProgressBar
         android:id="@+id/loadingSpinnerForSelectedContent"
-        android:layout_width="30dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/loading_animation"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 
