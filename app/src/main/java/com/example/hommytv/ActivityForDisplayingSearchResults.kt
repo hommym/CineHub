@@ -9,8 +9,11 @@ import android.provider.SearchRecentSuggestions
 import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hommytv.databinding.ActivityForDisplayingSearchResultsBinding
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 class ActivityForDisplayingSearchResults : AppCompatActivity() {
 
@@ -18,10 +21,37 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
     lateinit var adapter:TheAdapterForListBasedRecyclerView
 
     val viewModel:TheViewModel by viewModels()
-
+    val hasAnItemBeingSelected= MutableSharedFlow<Boolean>()
+    var numberOfFragInBackStack=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+
+
+
+
+
+//        setting up the collector for hasAnItemBeingSelected
+        lifecycleScope.launch {
+            hasAnItemBeingSelected.collect{
+
+                if(it){
+                    views.textView11.visibility=View.INVISIBLE
+                    views.recyclerViewForSearchResults.visibility=View.INVISIBLE
+                }
+                else if(numberOfFragInBackStack==0){
+                    views.textView11.visibility=View.VISIBLE
+                    views.recyclerViewForSearchResults.visibility=View.VISIBLE
+                }
+
+
+            }
+
+
+        }
 
         views=ActivityForDisplayingSearchResultsBinding.inflate(layoutInflater)
         setContentView(views.root)
@@ -30,6 +60,7 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
 
 //        setting the context property
         adapter.context=this@ActivityForDisplayingSearchResults
+        viewModel.context=this@ActivityForDisplayingSearchResults
 
 
         views.recyclerViewForSearchResults.layoutManager=LinearLayoutManager(this@ActivityForDisplayingSearchResults)

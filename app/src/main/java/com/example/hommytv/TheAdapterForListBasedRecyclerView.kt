@@ -1,15 +1,19 @@
 package com.example.hommytv
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.hommytv.retrofitdataclasses.MoviesList
+import kotlinx.coroutines.launch
 
 class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForListBasedRecyclerView.Holder>() {
     var context: Context?=null
@@ -22,7 +26,7 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
         val movieTitle: TextView =itemView.findViewById(R.id.movie_title2)
         val genreTextView: TextView =itemView.findViewById(R.id.genre2)
         val optionMenu:ImageView=itemView.findViewById(R.id.options_menu)
-
+        val item:CardView=itemView.findViewById(R.id.itemSelector)
 
 
     }
@@ -79,6 +83,43 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 //   display context menu with add to favourite and watchlist as options(not yet implemented)
 
 
+
+            }
+
+//            setting listener for when an item is selected
+
+            item.setOnClickListener {
+
+
+                //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
+                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                val nextFrag=SelectedMoviesOrSeriesFragment()
+                val bundleObject= Bundle()
+
+                bundleObject.putString("Poster",currrentData.poster_path)
+                bundleObject.putInt("Movie_Id",currrentData.id)
+                bundleObject.putString("Genre",holder.genreTextView.text.toString())
+                bundleObject.putString("Overview",currrentData.overview)
+                bundleObject.putString("MediaType",currrentData.media_type)
+                nextFrag.arguments=bundleObject
+
+                fragTransaction.replace( R.id.serach_activity_layout_for_frag,nextFrag)
+                fragTransaction.addToBackStack(null)
+
+                fragTransaction.commit()
+
+
+                val actvityObject= (context as ActivityForDisplayingSearchResults)
+
+
+                actvityObject.numberOfFragInBackStack++
+
+                actvityObject.lifecycleScope.launch {
+
+                    actvityObject.hasAnItemBeingSelected.emit(true)
+
+                }
 
             }
 

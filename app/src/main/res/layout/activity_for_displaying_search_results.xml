@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/serach_activity_layout_for_frag"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E8040404"
     tools:context=".ActivityForDisplayingSearchResults">
-
 
 
     <TextView
@@ -36,6 +36,7 @@
         android:id="@+id/recyclerViewForSearchResults"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#E8040404"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

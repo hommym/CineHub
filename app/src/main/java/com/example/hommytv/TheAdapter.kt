@@ -65,7 +65,7 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
 
 //            checking f adapter is being used in main activity
-            if(context is MainActivity){
+
 
 //                setting the title and release dates or genres
               when("movie"){
@@ -85,29 +85,57 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
               }
 
-            }
+
 
 
 
             itemContainer.setOnClickListener {
 
 //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
-                val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
-                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
-                val nextFrag=SelectedMoviesOrSeriesFragment()
-                val bundleObject=Bundle()
 
-                bundleObject.putString("Poster",currrentData.poster_path)
-                bundleObject.putInt("Movie_Id",currrentData.id)
-                bundleObject.putString("Genre",holder.releaseDate.text.toString())
-                bundleObject.putString("Overview",currrentData.overview)
-                bundleObject.putString("MediaType",currrentData.media_type)
-                nextFrag.arguments=bundleObject
+                if(context is MainActivity){
+                    val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
+                    fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                    val nextFrag=SelectedMoviesOrSeriesFragment()
+                    val bundleObject=Bundle()
 
-                fragTransaction.replace( R.id.layout_for_sections,nextFrag)
-                fragTransaction.addToBackStack(null)
+                    bundleObject.putString("Poster",currrentData.poster_path)
+                    bundleObject.putInt("Movie_Id",currrentData.id)
+                    bundleObject.putString("Genre",holder.releaseDate.text.toString())
+                    bundleObject.putString("Overview",currrentData.overview)
+                    bundleObject.putString("MediaType",currrentData.media_type)
+                    nextFrag.arguments=bundleObject
 
-                fragTransaction.commit()
+                    fragTransaction.replace( R.id.layout_for_sections,nextFrag)
+                    fragTransaction.addToBackStack(null)
+
+                    fragTransaction.commit()
+                }
+                else{
+                    //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                    val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
+                    fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                    val nextFrag=SelectedMoviesOrSeriesFragment()
+                    val bundleObject= Bundle()
+
+                    bundleObject.putString("Poster",currrentData.poster_path)
+                    bundleObject.putInt("Movie_Id",currrentData.id)
+                    bundleObject.putString("Genre",holder.releaseDate.text.toString())
+                    bundleObject.putString("Overview",currrentData.overview)
+                    bundleObject.putString("MediaType",currrentData.media_type)
+                    nextFrag.arguments=bundleObject
+
+                    fragTransaction.replace( R.id.serach_activity_layout_for_frag,nextFrag)
+                    fragTransaction.addToBackStack(null)
+
+                    fragTransaction.commit()
+
+                    (context as ActivityForDisplayingSearchResults).numberOfFragInBackStack++
+
+
+
+                }
+
             }
 
 

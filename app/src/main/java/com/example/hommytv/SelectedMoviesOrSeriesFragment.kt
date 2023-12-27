@@ -1,11 +1,13 @@
 package com.example.hommytv
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -34,6 +36,28 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
 
         views= FragmentSelectedMoviesOrSeriesBinding.inflate(inflater, container, false)
         return views.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is ActivityForDisplayingSearchResults){
+            activity?.onBackPressedDispatcher?.addCallback(this){
+                isEnabled=true
+
+                context.numberOfFragInBackStack--
+
+                parentFragmentManager.popBackStack()
+
+               context.lifecycleScope.launch {
+
+
+                       context.hasAnItemBeingSelected.emit(false)
+
+
+               }
+
+            }
+        }
     }
 
 
