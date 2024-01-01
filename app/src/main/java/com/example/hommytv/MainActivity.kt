@@ -1,14 +1,17 @@
 package com.example.hommytv
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.work.Constraints
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.hommytv.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     val viewModel:TheViewModel by viewModels()
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         views=ActivityMainBinding.inflate(layoutInflater)
@@ -28,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 //passing the the value for the context variable in the viewmodel
 viewModel.context=this@MainActivity
 
-//initialising application instance
 
 
 
@@ -266,6 +269,37 @@ viewModel.context=this@MainActivity
 
     }
 
+
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+////        setting constraints
+//        val constrains=Constraints.Builder()
+//            .setRequiresDeviceIdle(true)
+//            .build()
+//
+////    setting work request for deleting the folder for holding the images for slider
+//        val myWorkRequest= OneTimeWorkRequestBuilder<TemporaryFilesDeletionWorker>()
+//            .setConstraints(constrains)
+//            .build()
+
+//    registering the work request on the system through work manager(just for testing i might change)
+//        WorkManager.getInstance(this@MainActivity).enqueue(myWorkRequest)
+
+
+//        val fileObjOfImagesForSlider= File(filesDir,"ImagesForSlider")
+//
+//        for(file in fileObjOfImagesForSlider.listFiles()!!){
+////            deleting folder content
+//            file.delete()
+//
+//        }
+//
+////        deleting folder
+//        fileObjOfImagesForSlider.delete()
+
+    }
 
 
 

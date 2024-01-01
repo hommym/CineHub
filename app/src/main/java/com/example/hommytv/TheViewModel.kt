@@ -1,8 +1,12 @@
 package com.example.hommytv
 
+import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,17 +19,19 @@ import com.example.hommytv.retrofitdataclasses.MovieDetails
 import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URL
+import java.nio.file.Files
+import kotlin.io.path.exists
 
 class TheViewModel(): ViewModel() {
 
     var context:Context?=null
+
 
 
 //    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
@@ -100,6 +106,8 @@ class TheViewModel(): ViewModel() {
              hasNetworkRequestFailed.emit(true)
          }
 
+         Log.d("FileError","$error")
+
      }
 
 
@@ -135,6 +143,10 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
     }
 
 
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun gettingAllDataForHomeTabFromServer(){
 
         var errorHolder:Throwable? =null
@@ -143,8 +155,16 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
         val sharedMutex=Mutex()
 
 
-        viewModelScope.launch(coroutineErrorHandler) {
 
+
+        viewModelScope.launch(coroutineErrorHandler+Dispatchers.IO) {
+
+//            //    creating a folder called ImagesForSlider for the app internal storage
+//            val pathObjOfImagesForSlider= context!!.filesDir.toPath().resolve("ImagesForSlider")
+//            if(!pathObjOfImagesForSlider.exists()){
+//                Files.createDirectory(pathObjOfImagesForSlider)
+//                Log.d("FileCreated","yes")
+//            }
 
 
 
@@ -180,6 +200,31 @@ var returnedCurrentlyAiringSeries:ContentFromServer? =null
                                            else{
 //                                        adding image url to list of images that is
                                                returnedImages.add(imageToAdd)
+
+////                                               creating image file in images for slider folder
+//                                               val imgFilePath=pathObjOfImagesForSlider.resolve("${item.title}.jpg")
+//
+//                                               if(!imgFilePath.exists()){
+//                                                   viewModelScope.launch(Dispatchers.IO) {
+//
+//
+////                                                   creating an input stream from the url object created from the image string url in imageToAdd
+//                                                       val  imageUrlObj=URL(imageToAdd)
+//
+//                                                       imageUrlObj.openStream().use {urlInputStream->
+//
+//                                                           urlInputStream.copyTo(Files.newOutputStream(imgFilePath))
+//
+//                                                       }
+//
+//
+//                                                   }
+//                                               }
+
+
+
+
+//
                                            }
 
                                            numberIterations++

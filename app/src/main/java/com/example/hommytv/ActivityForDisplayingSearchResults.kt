@@ -63,6 +63,7 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
         viewModel.context=this@ActivityForDisplayingSearchResults
 
 
+
         views.recyclerViewForSearchResults.layoutManager=LinearLayoutManager(this@ActivityForDisplayingSearchResults)
 
 

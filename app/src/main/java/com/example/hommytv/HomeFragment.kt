@@ -1,10 +1,12 @@
 package com.example.hommytv
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
@@ -17,6 +19,7 @@ import com.example.hommytv.databinding.FragmentHomeBinding
 import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 class HomeFragment : Fragment() {
@@ -42,6 +45,7 @@ class HomeFragment : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -228,6 +232,26 @@ class HomeFragment : Fragment() {
                     var imageViewToSetImage=views.homeMainImage1
 
 
+//                    val folderHoldingImages= File( requireActivity().filesDir,"ImagesForSlider")
+//                    for (file in folderHoldingImages.listFiles()!!){
+//                        delay(41000L)
+//                        imageViewToSetImage.load(file){
+//                            placeholder(R.drawable.baseline_image_24)
+//                        }
+//
+//                        if (imageViewToSetImage==views.homeMainImage1){
+//
+//                            imageViewToSetImage=views.homeMainImage2
+//                        }
+//                        else{
+//
+//                            imageViewToSetImage=views.homeMainImage1
+//                        }
+//
+//
+//                    }
+
+
                     while (currentImageIndexInList!=-1){
                         delay(41000L)
                         val imgUriT= viewModel.returnedImages!![currentImageIndexInList].toUri().buildUpon()?.scheme("https")?.build()
@@ -246,6 +270,8 @@ class HomeFragment : Fragment() {
 
                         currentImageIndexInList--
                     }
+
+
 
 
                 }
