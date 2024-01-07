@@ -8,15 +8,14 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.hommytv.networkrequest.RetrofitObject
 import com.example.hommytv.retrofitdataclasses.ContentFromServer
 import com.example.hommytv.retrofitdataclasses.ContentType
 import com.example.hommytv.retrofitdataclasses.MovieDetails
 import com.example.hommytv.retrofitdataclasses.MoviesList
+import com.example.hommytv.roomdatabase.FavTable
+import com.example.hommytv.roomdatabase.WatchLaterTable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.sync.Mutex
@@ -31,10 +30,39 @@ import kotlin.io.path.exists
 class TheViewModel(): ViewModel() {
 
     var context:Context?=null
+    var applicationContext:Application?=null
+
+
+    fun dataInFavTable():LiveData<List<FavTable>>{
+        return (applicationContext as App).repositoryObject.showFav().asLiveData()
+    }
+
+    suspend fun addToFav(data:FavTable){
+
+        (applicationContext as App).repositoryObject.addToFav(data)
+    }
+
+    suspend fun removeFromFav(data: FavTable){
+        (applicationContext as App).repositoryObject.removeFromFav(data)
+    }
+
+
+    fun dataInWatchLaterTable():LiveData<List<WatchLaterTable>>{
+        return (applicationContext as App).repositoryObject.showWatchLater().asLiveData()
+    }
+
+    suspend fun addToWatchLater(data:WatchLaterTable){
+
+        (applicationContext as App).repositoryObject.addToWatchLater(data)
+    }
+
+    suspend fun removeFromWatchLater(data: WatchLaterTable){
+        (applicationContext as App).repositoryObject.removeFromWatchLater(data)
+    }
 
 
 
-//    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
+    //    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
   val currentFragmentSectionsLayout:Fragment?
   get() = (context as MainActivity).supportFragmentManager.findFragmentById(R.id.layout_for_sections)
 

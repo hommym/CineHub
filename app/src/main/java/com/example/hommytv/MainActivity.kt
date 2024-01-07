@@ -31,6 +31,11 @@ class MainActivity : AppCompatActivity() {
 
 //passing the the value for the context variable in the viewmodel
 viewModel.context=this@MainActivity
+viewModel.applicationContext=application
+
+
+
+
 
 
 

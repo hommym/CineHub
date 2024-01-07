@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.hommytv.roomdatabase.AppDatabase
+import com.example.hommytv.roomdatabase.NewAppDatabase
 import com.example.hommytv.roomdatabase.Repository
 
 
@@ -19,8 +20,8 @@ companion object{
 }
 
 
-private val databaseObject:AppDatabase by lazy {
-    AppDatabase.getAppDatabaseObject(this)
+private val databaseObject:NewAppDatabase by lazy {
+    NewAppDatabase.getAppDatabaseObject(this)
 }
 
 val repositoryObject:Repository by lazy {

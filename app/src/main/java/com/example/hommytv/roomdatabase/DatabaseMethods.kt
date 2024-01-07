@@ -25,7 +25,7 @@ interface DatabaseMethods {
     @Delete
     suspend fun removeFromWatchLater(data:WatchLaterTable)
 
-    @Query("SELECT * FROM fav_table")
+    @Query("SELECT * FROM watch_later_table")
      fun showWatchLater():Flow<List<WatchLaterTable>>
 
 

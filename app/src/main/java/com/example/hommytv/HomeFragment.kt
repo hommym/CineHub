@@ -121,6 +121,24 @@ class HomeFragment : Fragment() {
 
 
 
+        //  adding observer to the data in Fav table and watch later table
+        viewModel.dataInFavTable().observe(viewLifecycleOwner, Observer {
+        adapterRecentMovies.dataInFavTable=it
+        adapterAiringTvSeries.dataInFavTable=it
+        adapterUpcomingMovies.dataInFavTable=it
+        adapterTopRatedSeries.dataInFavTable=it
+
+        })
+
+        viewModel.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer {
+
+            adapterRecentMovies.dataInWatchLaterTable=it
+            adapterAiringTvSeries.dataInWatchLaterTable=it
+            adapterUpcomingMovies.dataInWatchLaterTable=it
+            adapterTopRatedSeries.dataInWatchLaterTable=it
+        })
+
+
 
 //        adding a click listen to profile icon
 
