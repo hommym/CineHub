@@ -12,6 +12,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -90,6 +91,14 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
 //        setting adapter for recommendation section
         adapter= TheAdapter()
         adapter.context=requireActivity()
+        viewModel.dataInFavTable().observe(viewLifecycleOwner, Observer {
+
+            adapter.dataInFavTable=it
+
+        })
+        viewModel.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer {
+            adapter.dataInWatchLaterTable=it
+        })
 
 //        setting up the format for recyclerview
         views.similarContentRecyclerView.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)

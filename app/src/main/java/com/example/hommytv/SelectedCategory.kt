@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hommytv.databinding.FragmentSelectedCategoryBinding
@@ -31,6 +32,14 @@ class SelectedCategory : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter= TheAdapter()
+
+        viewModel.dataInFavTable().observe(viewLifecycleOwner, Observer {
+            adapter.dataInFavTable=it
+        })
+
+        viewModel.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer {
+            adapter.dataInWatchLaterTable=it
+        })
        lifecycleScope.launch {
 
            launch {

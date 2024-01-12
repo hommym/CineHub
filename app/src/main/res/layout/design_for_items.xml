@@ -56,7 +56,7 @@
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                     <CheckBox
-                        android:id="@+id/checkBox2"
+                        android:id="@+id/fav_chekbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:button="@drawable/favourite_checkbox_design"
@@ -65,13 +65,13 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <CheckBox
-                        android:id="@+id/checkBox3"
+                        android:id="@+id/watch_later_chekbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:button="@drawable/watch_later_checkbox_design"
                         app:buttonTint="#FFB702"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+                        app:layout_constraintTop_toBottomOf="@+id/fav_chekbox" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

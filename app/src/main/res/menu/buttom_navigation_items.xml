@@ -19,7 +19,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/download_section"
-        android:icon="@drawable/baseline_download_for_offline_24"
-        android:title="Downloads"
+        android:icon="@drawable/baseline_person_24"
+        android:title="You"
         app:showAsAction="always" />
 </menu>

@@ -10,8 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.work.Constraints
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.hommytv.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
@@ -142,8 +140,8 @@ viewModel.applicationContext=application
             }
 
             else{
-                if(supportFragmentManager.findFragmentById(R.id.layout_for_sections) !is DownloadFragment){
-                    fragmentInsertion(DownloadFragment(),layoutForInsertion = R.id.layout_for_sections)
+                if(supportFragmentManager.findFragmentById(R.id.layout_for_sections) !is YouFragment){
+                    fragmentInsertion(YouFragment(),layoutForInsertion = R.id.layout_for_sections)
                     true
                 }
                 else{

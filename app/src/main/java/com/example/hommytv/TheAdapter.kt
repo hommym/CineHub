@@ -63,43 +63,85 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
             favCheckBox.setOnCheckedChangeListener(null)
             watchLaterCheckBox.setOnCheckedChangeListener(null)
 
-            (context as MainActivity).lifecycleScope.launch {
+            if (context is MainActivity){
+                (context as MainActivity).lifecycleScope.launch {
 
-                coroutineScope {
-                    launch {
-                       for(it in dataInFavTable){
-                           if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
-                               favCheckBox.isChecked = true
-                               break
-                           }
-                           else if(dataInFavTable.lastIndex==(dataInFavTable.size-1)){
-                               favCheckBox.isChecked = false
-                           }
-                       }
-                    }
-
-                    launch {
-
-
-
-                        for(it in dataInWatchLaterTable){
-                            if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
-                                watchLaterCheckBox.isChecked = true
-                                break
-                            }
-                            else if(dataInWatchLaterTable.lastIndex==(dataInWatchLaterTable.size-1)){
-                                watchLaterCheckBox.isChecked = false
+                    coroutineScope {
+                        launch {
+                            for(it in dataInFavTable){
+                                if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
+                                    favCheckBox.isChecked = true
+                                    break
+                                }
+                                else if(dataInFavTable.lastIndex==(dataInFavTable.size-1)){
+                                    favCheckBox.isChecked = false
+                                }
                             }
                         }
 
+                        launch {
+
+
+
+                            for(it in dataInWatchLaterTable){
+                                if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
+                                    watchLaterCheckBox.isChecked = true
+                                    break
+                                }
+                                else if(dataInWatchLaterTable.lastIndex==(dataInWatchLaterTable.size-1)){
+                                    watchLaterCheckBox.isChecked = false
+                                }
+                            }
+
+
+
+                        }
 
 
                     }
 
+                }
+            }
+            else{
+                (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+
+                    coroutineScope {
+                        launch {
+                            for(it in dataInFavTable){
+                                if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
+                                    favCheckBox.isChecked = true
+                                    break
+                                }
+                                else if(dataInFavTable.lastIndex==(dataInFavTable.size-1)){
+                                    favCheckBox.isChecked = false
+                                }
+                            }
+                        }
+
+                        launch {
+
+
+
+                            for(it in dataInWatchLaterTable){
+                                if(it.contentTitle==currentData.title || it.contentTitle==currentData.original_name){
+                                    watchLaterCheckBox.isChecked = true
+                                    break
+                                }
+                                else if(dataInWatchLaterTable.lastIndex==(dataInWatchLaterTable.size-1)){
+                                    watchLaterCheckBox.isChecked = false
+                                }
+                            }
+
+
+
+                        }
+
+
+                    }
 
                 }
-
             }
+
 
 //            setting image resource
             val imgUri= currentData.poster_path.toUri().buildUpon().scheme("https").build()
@@ -197,27 +239,53 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
           favCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
 
               if(isChecked){
-                  (context as MainActivity).lifecycleScope.launch {
-                        val dataToAddToTable=FavTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
-                      (context as MainActivity).viewModel.addToFav(dataToAddToTable)
+                  if(context is MainActivity){
+                      (context as MainActivity).lifecycleScope.launch {
+                          val dataToAddToTable=FavTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                          (context as MainActivity).viewModel.addToFav(dataToAddToTable)
+                      }
                   }
+                  else{
+                      (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                          val dataToAddToTable=FavTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                          (context as ActivityForDisplayingSearchResults).viewModel.addToFav(dataToAddToTable)
+                      }
+                  }
+
 
                   Toast.makeText(context,"Added To Favorite",Toast.LENGTH_SHORT).show()
               }
               else{
 
-                  (context as MainActivity).lifecycleScope.launch{
+                  if(context is MainActivity){
+                      (context as MainActivity).lifecycleScope.launch{
 
 
-                      dataInFavTable.forEach {
-                          if (it.contentTitle==movieTitle.text.toString()){
+                          dataInFavTable.forEach {
+                              if (it.contentTitle==movieTitle.text.toString()){
 
-                              (context as MainActivity).viewModel.removeFromFav(it)
+                                  (context as MainActivity).viewModel.removeFromFav(it)
 
+                              }
                           }
-                      }
 
+                      }
                   }
+                  else{
+                      (context as ActivityForDisplayingSearchResults).lifecycleScope.launch{
+
+
+                          dataInFavTable.forEach {
+                              if (it.contentTitle==movieTitle.text.toString()){
+
+                                  (context as ActivityForDisplayingSearchResults).viewModel.removeFromFav(it)
+
+                              }
+                          }
+
+                      }
+                  }
+
                   Toast.makeText(context,"Removed From Favorite",Toast.LENGTH_SHORT).show()
 
               }
@@ -229,27 +297,52 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
           watchLaterCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
 
               if(isChecked){
-                  (context as MainActivity).lifecycleScope.launch {
-                      val dataToAddToTable=WatchLaterTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
-                      (context as MainActivity).viewModel.addToWatchLater(dataToAddToTable)
+                  if(context is MainActivity){
+                      (context as MainActivity).lifecycleScope.launch {
+                          val dataToAddToTable=WatchLaterTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                          (context as MainActivity).viewModel.addToWatchLater(dataToAddToTable)
+                      }
                   }
+                  else{
+                      (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                          val dataToAddToTable=WatchLaterTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                          (context as ActivityForDisplayingSearchResults).viewModel.addToWatchLater(dataToAddToTable)
+                      }
+                  }
+
 
                   Toast.makeText(context,"Added To Watch Later",Toast.LENGTH_SHORT).show()
               }
               else{
 
-                  (context as MainActivity).lifecycleScope.launch{
+                if(context is MainActivity){
+                    (context as MainActivity).lifecycleScope.launch{
 
 
-                      dataInWatchLaterTable.forEach {
-                          if (it.contentTitle==movieTitle.text.toString()){
+                        dataInWatchLaterTable.forEach {
+                            if (it.contentTitle==movieTitle.text.toString()){
 
-                              (context as MainActivity).viewModel.removeFromWatchLater(it)
+                                (context as MainActivity).viewModel.removeFromWatchLater(it)
 
-                          }
-                      }
+                            }
+                        }
 
-                  }
+                    }
+                }
+                  else{
+                    (context as ActivityForDisplayingSearchResults).lifecycleScope.launch{
+
+
+                        dataInWatchLaterTable.forEach {
+                            if (it.contentTitle==movieTitle.text.toString()){
+
+                                (context as ActivityForDisplayingSearchResults).viewModel.removeFromWatchLater(it)
+
+                            }
+                        }
+
+                    }
+                }
                   Toast.makeText(context,"Removed From Watch Later",Toast.LENGTH_SHORT).show()
 
               }

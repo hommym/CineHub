@@ -34,6 +34,7 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
 
 
 
+
 //        setting up the collector for hasAnItemBeingSelected
         lifecycleScope.launch {
             hasAnItemBeingSelected.collect{
@@ -61,6 +62,7 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
 //        setting the context property
         adapter.context=this@ActivityForDisplayingSearchResults
         viewModel.context=this@ActivityForDisplayingSearchResults
+       viewModel.applicationContext=application
 
 
 
