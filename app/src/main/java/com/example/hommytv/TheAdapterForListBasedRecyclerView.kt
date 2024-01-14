@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.hommytv.retrofitdataclasses.MoviesList
+import com.example.hommytv.roomdatabase.HistoryTable
 import kotlinx.coroutines.launch
 
 class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForListBasedRecyclerView.Holder>() {
@@ -40,29 +41,29 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
-        val currrentData= data[position]
+        val currentData= data[position]
 
         holder.apply {
 
 
             //            setting image resource
-            val imgUri= currrentData.poster_path.toUri().buildUpon().scheme("https").build()
+            val imgUri= currentData.poster_path.toUri().buildUpon().scheme("https").build()
             poster.load(imgUri){
                 placeholder(R.drawable.baseline_image_24)
 
             }
 
 //            setting title
-            when(currrentData.media_type){
+            when(currentData.media_type){
 
                 "movie"->{
 
-                    movieTitle.text=currrentData.title
+                    movieTitle.text=currentData.title
                 }
 
 
                 else->{
-                    movieTitle.text=currrentData.original_name
+                    movieTitle.text=currentData.original_name
                 }
 
 
@@ -72,7 +73,7 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
 
 //            setting the genre
-            settingGenre(holder,currrentData)
+            settingGenre(holder,currentData)
 
 
 //adding click listner to option icon
@@ -90,6 +91,11 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
             item.setOnClickListener {
 
+                //                    adding data to history table
+                val historyObj= HistoryTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                    (context as ActivityForDisplayingSearchResults).viewModel.addToHistory(historyObj)
+                }
 
                 //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
                 val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
@@ -97,11 +103,11 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
                 val nextFrag=SelectedMoviesOrSeriesFragment()
                 val bundleObject= Bundle()
 
-                bundleObject.putString("Poster",currrentData.poster_path)
-                bundleObject.putInt("Movie_Id",currrentData.id)
+                bundleObject.putString("Poster",currentData.poster_path)
+                bundleObject.putInt("Movie_Id",currentData.id)
                 bundleObject.putString("Genre",holder.genreTextView.text.toString())
-                bundleObject.putString("Overview",currrentData.overview)
-                bundleObject.putString("MediaType",currrentData.media_type)
+                bundleObject.putString("Overview",currentData.overview)
+                bundleObject.putString("MediaType",currentData.media_type)
                 nextFrag.arguments=bundleObject
 
                 fragTransaction.replace( R.id.serach_activity_layout_for_frag,nextFrag)

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.hommytv.retrofitdataclasses.MoviesList
 import com.example.hommytv.roomdatabase.FavTable
+import com.example.hommytv.roomdatabase.HistoryTable
 import com.example.hommytv.roomdatabase.WatchLaterTable
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -187,9 +188,15 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
             itemContainer.setOnClickListener {
 
+
 //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
 
                 if(context is MainActivity){
+//                    adding data to history table
+                    val historyObj= HistoryTable(currentData.title,currentData.poster_path,currentData.id,currentData.media_type)
+                    (context as MainActivity).lifecycleScope.launch {
+                        (context as MainActivity).viewModel.addToHistory(historyObj)
+                    }
                     val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
                     fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
                     val nextFrag=SelectedMoviesOrSeriesFragment()
@@ -208,6 +215,11 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
                     fragTransaction.commit()
                 }
                 else{
+//                    adding data to history table
+                    val historyObj= HistoryTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                    (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                        (context as ActivityForDisplayingSearchResults).viewModel.addToHistory(historyObj)
+                    }
                     //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
                     val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
                     fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)

@@ -42,4 +42,13 @@ class Repository( var databaseMethods:DatabaseMethods) {
         return databaseMethods.showWatchLater()
     }
 
+    suspend fun addToHistory(data:HistoryTable){
+        databaseMethods.addToHistory(data)
+    }
+
+    fun showHistory():Flow<List<HistoryTable>>{
+
+        return databaseMethods.showHistory()
+    }
+
 }

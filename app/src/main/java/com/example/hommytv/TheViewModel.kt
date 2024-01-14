@@ -15,6 +15,7 @@ import com.example.hommytv.retrofitdataclasses.ContentType
 import com.example.hommytv.retrofitdataclasses.MovieDetails
 import com.example.hommytv.retrofitdataclasses.MoviesList
 import com.example.hommytv.roomdatabase.FavTable
+import com.example.hommytv.roomdatabase.HistoryTable
 import com.example.hommytv.roomdatabase.WatchLaterTable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -61,6 +62,14 @@ class TheViewModel(): ViewModel() {
     }
 
 
+    suspend fun addToHistory(data:HistoryTable){
+
+        (applicationContext as App).repositoryObject.addToHistory(data)
+    }
+
+    fun showHistory():LiveData<List<HistoryTable>> {
+        return  (applicationContext as App).repositoryObject.showHistory().asLiveData()
+    }
 
     //    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
   val currentFragmentSectionsLayout:Fragment?

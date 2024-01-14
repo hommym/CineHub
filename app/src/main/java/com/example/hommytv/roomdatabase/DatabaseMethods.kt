@@ -29,4 +29,11 @@ interface DatabaseMethods {
      fun showWatchLater():Flow<List<WatchLaterTable>>
 
 
+     @Insert
+    suspend fun addToHistory(data:HistoryTable)
+
+     @Query("SELECT * FROM watch_later_table")
+     fun showHistory():Flow<List<HistoryTable>>
+
+
 }
