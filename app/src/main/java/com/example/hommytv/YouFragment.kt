@@ -6,12 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hommytv.databinding.FragmentYouBinding
 import com.example.hommytv.roomdatabase.FavTable
+import com.example.hommytv.roomdatabase.HistoryTable
 import com.example.hommytv.roomdatabase.WatchLaterTable
+import kotlinx.coroutines.launch
 
 
 class YouFragment : Fragment() {
@@ -23,11 +29,11 @@ class YouFragment : Fragment() {
     val viewModel:TheViewModel by activityViewModels()
 
     fun toListOfDataHolder(fav:List<FavTable>?=null,
-   watchLater:List<WatchLaterTable>?=null,history:List<String>?=null):ArrayList<DataHolder>{
+   watchLater:List<WatchLaterTable>?=null,history:List<HistoryTable>?=null):ArrayList<DataHolder>{
         val listOfDataHolder= arrayListOf<DataHolder>()
         if (fav!=null){
 
-            fav.forEach {
+            fav.reversed().forEach {
                 val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
                 listOfDataHolder.add(dataHolderObj)
             }
@@ -35,7 +41,7 @@ class YouFragment : Fragment() {
         }
         else if(watchLater!=null){
 
-            watchLater.forEach {
+            watchLater.reversed().forEach {
                 val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
                 listOfDataHolder.add(dataHolderObj)
             }
@@ -44,7 +50,10 @@ class YouFragment : Fragment() {
         }
         else{
 
-            //            not yet implemented
+            history?.reversed()?.forEach {
+                val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
+                listOfDataHolder.add(dataHolderObj)
+            }
         }
 
 
@@ -63,6 +72,31 @@ class YouFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        lifecycleScope.launch {
+//            setting profile image if it exist
+            val dataStorObj= App.objectOFDataStore
+
+            dataStorObj.readData.collect{
+
+                if(it[AppDataStore.isProfileSet]==true){
+
+                    for (file in requireActivity().filesDir.listFiles()!!){
+                        if(file.name=="ProfileImage"){
+
+                            views.profileImage.setImageURI(file.absolutePath.toUri())
+
+                        }
+                    }
+
+
+
+                }
+
+            }
+
+
+        }
 
         adapterForWatchLater= AdapterForYouFragment()
         adapterForFav= AdapterForYouFragment()
@@ -89,6 +123,12 @@ class YouFragment : Fragment() {
             adapterForFav.notifyDataSetChanged()
         })
 
+        viewModel.showHistory().observe(viewLifecycleOwner, Observer {
+
+            adapterForHistory.data=toListOfDataHolder(history = it)
+            adapterForHistory.notifyDataSetChanged()
+        })
+
 
 //setting adapters to recycler views
         views.recyclerviewFavorite.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
@@ -98,8 +138,13 @@ class YouFragment : Fragment() {
         views.recyclerviewWatchLater.adapter=adapterForWatchLater
 
 
+        views.recyclerviewHistory.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+        views.recyclerviewHistory.adapter=adapterForHistory
 
     }
+
+
+
 
 
 }

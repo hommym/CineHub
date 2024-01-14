@@ -32,7 +32,7 @@ interface DatabaseMethods {
      @Insert
     suspend fun addToHistory(data:HistoryTable)
 
-     @Query("SELECT * FROM watch_later_table")
+     @Query("SELECT * FROM History_Table")
      fun showHistory():Flow<List<HistoryTable>>
 
 

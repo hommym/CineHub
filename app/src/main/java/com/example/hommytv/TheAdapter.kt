@@ -193,7 +193,7 @@ class TheAdapter():RecyclerView.Adapter<TheAdapter.Holder>() {
 
                 if(context is MainActivity){
 //                    adding data to history table
-                    val historyObj= HistoryTable(currentData.title,currentData.poster_path,currentData.id,currentData.media_type)
+                    val historyObj= HistoryTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
                     (context as MainActivity).lifecycleScope.launch {
                         (context as MainActivity).viewModel.addToHistory(historyObj)
                     }
