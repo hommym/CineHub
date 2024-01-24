@@ -143,7 +143,7 @@ class TheViewModel(): ViewModel() {
              hasNetworkRequestFailed.emit(true)
          }
 
-         Log.d("FileError","$error")
+
 
      }
 

@@ -1,6 +1,7 @@
 package com.example.hommytv
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +62,22 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
             item.setOnClickListener {
 
 
-//                not yet implemented
+
+
+                //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
+                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                val nextFrag=SelectedMoviesOrSeriesFragment()
+                val bundleObject= Bundle()
+                bundleObject.putString("MediaType",currentData.mediaType)
+                bundleObject.putString("Poster",currentData.imgUrl)
+                bundleObject.putInt("Movie_Id",currentData.contentId)
+                nextFrag.arguments=bundleObject
+
+                fragTransaction.replace(R.id.layout_for_sections,nextFrag)
+                fragTransaction.addToBackStack(null)
+
+                fragTransaction.commit()
 
             }
 

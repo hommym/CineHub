@@ -18,8 +18,13 @@ import kotlinx.coroutines.launch
 
 class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForListBasedRecyclerView.Holder>() {
     var context: Context?=null
-    var data= arrayListOf<MoviesList>()
+    var dataForSearch= arrayListOf<MoviesList>()
+    var dataFromDatabase= listOf<DataHolder>()
 
+    var adapterNotForSearchResult=false
+
+//    variable to determine which type of list in you frag i will be using
+      var   listTypeInYouFragment="History"
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -41,101 +46,181 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
-        val currentData= data[position]
-
-        holder.apply {
 
 
-            //            setting image resource
-            val imgUri= currentData.poster_path.toUri().buildUpon().scheme("https").build()
-            poster.load(imgUri){
-                placeholder(R.drawable.baseline_image_24)
 
-            }
 
-//            setting title
-            when(currentData.media_type){
 
-                "movie"->{
 
-                    movieTitle.text=currentData.title
+        if(adapterNotForSearchResult){
+            val currentDataFromDatabase=dataFromDatabase[position]
+
+            holder.apply {
+                //            setting image resource
+                val imgUri= currentDataFromDatabase.imgUrl.toUri().buildUpon().scheme("https").build()
+                poster.load(imgUri){
+                    placeholder(R.drawable.baseline_image_24)
+
                 }
 
 
-                else->{
-                    movieTitle.text=currentData.original_name
-                }
+                //            setting title
+                movieTitle.text=currentDataFromDatabase.contentTitle
 
 
-            }
+//                   setting the media type(i would be using TextView for genre)
+                   genreTextView.text=currentDataFromDatabase.mediaType
 
 
-
-
-//            setting the genre
-            settingGenre(holder,currentData)
-
-
-//adding click listner to option icon
-
-            optionMenu.setOnClickListener {
-
+//            adding click listener to option menu
+                optionMenu.setOnClickListener {
 
 //   display context menu with add to favourite and watchlist as options(not yet implemented)
 
+                }
+
+
+                item.setOnClickListener {
+
+                    if(listTypeInYouFragment!="History"){
+                        //                    adding data to history table
+                        val historyObj= HistoryTable(movieTitle.text.toString(),currentDataFromDatabase.imgUrl,currentDataFromDatabase.contentId,currentDataFromDatabase.mediaType)
+                        (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                            (context as ActivityForDisplayingSearchResults).viewModel.addToHistory(historyObj)
+                        }
+                    }
+
+//       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                    val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
+                    fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                    val nextFrag=SelectedMoviesOrSeriesFragment()
+                    val bundleObject= Bundle()
+                    bundleObject.putString("MediaType",currentDataFromDatabase.mediaType)
+                    bundleObject.putString("Poster",currentDataFromDatabase.imgUrl)
+                    bundleObject.putInt("Movie_Id",currentDataFromDatabase.contentId)
+                    nextFrag.arguments=bundleObject
+
+                    fragTransaction.replace(R.id.serach_activity_layout_for_frag,nextFrag)
+                    fragTransaction.addToBackStack(null)
+
+                    fragTransaction.commit()
+
+                    val actvityObject= (context as ActivityForDisplayingSearchResults)
+
+
+                    actvityObject.numberOfFragInBackStack++
+
+                    actvityObject.lifecycleScope.launch {
+
+                        actvityObject.hasAnItemBeingSelected.emit(true)
+
+                    }
+                }
 
 
             }
 
-//            setting listener for when an item is selected
-
-            item.setOnClickListener {
-
-                //                    adding data to history table
-                val historyObj= HistoryTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
-                (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
-                    (context as ActivityForDisplayingSearchResults).viewModel.addToHistory(historyObj)
-                }
-
-                //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
-                val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
-                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
-                val nextFrag=SelectedMoviesOrSeriesFragment()
-                val bundleObject= Bundle()
-
-                bundleObject.putString("Poster",currentData.poster_path)
-                bundleObject.putInt("Movie_Id",currentData.id)
-                bundleObject.putString("Genre",holder.genreTextView.text.toString())
-                bundleObject.putString("Overview",currentData.overview)
-                bundleObject.putString("MediaType",currentData.media_type)
-                nextFrag.arguments=bundleObject
-
-                fragTransaction.replace( R.id.serach_activity_layout_for_frag,nextFrag)
-                fragTransaction.addToBackStack(null)
-
-                fragTransaction.commit()
-
-
-                val actvityObject= (context as ActivityForDisplayingSearchResults)
-
-
-                actvityObject.numberOfFragInBackStack++
-
-                actvityObject.lifecycleScope.launch {
-
-                    actvityObject.hasAnItemBeingSelected.emit(true)
-
-                }
-
-            }
 
 
 
 
 
         }
+        else{
+            val currentData= dataForSearch[position]
+            holder.apply {
 
 
+                //            setting image resource
+                val imgUri= currentData.poster_path.toUri().buildUpon().scheme("https").build()
+                poster.load(imgUri){
+                    placeholder(R.drawable.baseline_image_24)
+
+                }
+
+//            setting title
+                when(currentData.media_type){
+
+                    "movie"->{
+
+                        movieTitle.text=currentData.title
+                    }
+
+
+                    else->{
+                        movieTitle.text=currentData.original_name
+                    }
+
+
+                }
+
+
+
+
+//            setting the genre
+                settingGenre(holder,currentData)
+
+
+//adding click listner to option icon
+
+                optionMenu.setOnClickListener {
+
+
+//   display context menu with add to favourite and watchlist as options(not yet implemented)
+
+
+
+                }
+
+//            setting listener for when an item is selected
+
+                item.setOnClickListener {
+
+                    //                    adding data to history table
+                    val historyObj= HistoryTable(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                    (context as ActivityForDisplayingSearchResults).lifecycleScope.launch {
+                        (context as ActivityForDisplayingSearchResults).viewModel.addToHistory(historyObj)
+                    }
+
+                    //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                    val fragTransaction= (context as ActivityForDisplayingSearchResults).supportFragmentManager.beginTransaction()
+                    fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                    val nextFrag=SelectedMoviesOrSeriesFragment()
+                    val bundleObject= Bundle()
+
+                    bundleObject.putString("Poster",currentData.poster_path)
+                    bundleObject.putInt("Movie_Id",currentData.id)
+                    bundleObject.putString("Genre",holder.genreTextView.text.toString())
+                    bundleObject.putString("Overview",currentData.overview)
+                    bundleObject.putString("MediaType",currentData.media_type)
+                    nextFrag.arguments=bundleObject
+
+
+                    fragTransaction.replace( R.id.serach_activity_layout_for_frag,nextFrag)
+                    fragTransaction.addToBackStack(null)
+
+                    fragTransaction.commit()
+
+
+                    val actvityObject= (context as ActivityForDisplayingSearchResults)
+
+
+                    actvityObject.numberOfFragInBackStack++
+
+                    actvityObject.lifecycleScope.launch {
+
+                        actvityObject.hasAnItemBeingSelected.emit(true)
+
+                    }
+
+                }
+
+
+
+
+
+            }
+        }
 
 
 
@@ -144,7 +229,12 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 
 
     override fun getItemCount(): Int {
-        return data.size
+        return if(adapterNotForSearchResult){
+            dataFromDatabase.size
+        }
+        else{
+            dataForSearch.size
+        }
     }
 
 

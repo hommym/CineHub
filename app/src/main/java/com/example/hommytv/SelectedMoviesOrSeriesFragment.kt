@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import coil.load
 import com.example.hommytv.databinding.FragmentSelectedMoviesOrSeriesBinding
+import com.example.hommytv.retrofitdataclasses.Genre
+import com.example.hommytv.retrofitdataclasses.MoviesList
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.internal.format
@@ -108,12 +111,10 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
         val imgUri=arguments?.getString("Poster")!!.toUri().buildUpon().scheme("https").build()
         views.contentPoster.load(imgUri)
 
-//        setting genre
-        views.contentGenre.text=arguments?.getString("Genre")
 
 
-//       setting overview
-        views.contentDescription.text=arguments?.getString("Overview")
+
+
 
 
 
@@ -164,7 +165,13 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
                 "Seasons:${it?.number_of_seasons}"
             }
 
+                //        setting genre
+                views.contentGenre.text=arguments?.getString("Genre")?:settingGenre(it!!.genres, arguments?.getString("MediaType")!!)
 
+
+
+                //       setting overview
+                views.contentDescription.text=arguments?.getString("Overview")?:it?.overview
 
 //                setting up adapter's data
                 adapter.data=it!!.recommendations
@@ -262,6 +269,37 @@ class SelectedMoviesOrSeriesFragment : Fragment() {
         return String.format("%2d:%02d:%02d",hoursToUse.toInt(),remainingMinutes.toInt(),seconds.toInt())
 
     }
+    fun settingGenre(data:List<Genre>, genreType:String):String{
+//        the default for releaseDate textView
+        var text="Genre:"
 
+        if(data!=null){
+
+            if (genreType=="Movie"){
+
+                for (id in data){
+                    text += "|${id.name}"
+
+                }
+
+            }
+            else{
+                for (id in data){
+
+                    text += "|${id.name}"
+
+                }
+
+            }
+
+        }
+        else{
+            text += "Not Avialable"
+        }
+
+
+
+     return text
+    }
 
 }

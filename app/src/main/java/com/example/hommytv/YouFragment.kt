@@ -1,17 +1,16 @@
 package com.example.hommytv
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hommytv.databinding.FragmentYouBinding
 import com.example.hommytv.roomdatabase.FavTable
@@ -28,37 +27,41 @@ class YouFragment : Fragment() {
     lateinit var adapterForWatchLater:AdapterForYouFragment
     val viewModel:TheViewModel by activityViewModels()
 
-    fun toListOfDataHolder(fav:List<FavTable>?=null,
-   watchLater:List<WatchLaterTable>?=null,history:List<HistoryTable>?=null):ArrayList<DataHolder>{
-        val listOfDataHolder= arrayListOf<DataHolder>()
-        if (fav!=null){
+    companion object{
 
-            fav.reversed().forEach {
-                val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
-                listOfDataHolder.add(dataHolderObj)
+        fun toListOfDataHolder(fav:List<FavTable>?=null,
+         watchLater:List<WatchLaterTable>?=null,history:List<HistoryTable>?=null):ArrayList<DataHolder>{
+            val listOfDataHolder= arrayListOf<DataHolder>()
+            if (fav!=null){
+
+                fav.reversed().forEach {
+                    val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
+                    listOfDataHolder.add(dataHolderObj)
+                }
+
+            }
+            else if(watchLater!=null){
+
+                watchLater.reversed().forEach {
+                    val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
+                    listOfDataHolder.add(dataHolderObj)
+                }
+
+
+            }
+            else{
+
+                history?.reversed()?.forEach {
+                    val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
+                    listOfDataHolder.add(dataHolderObj)
+                }
             }
 
+
+            return listOfDataHolder
         }
-        else if(watchLater!=null){
-
-            watchLater.reversed().forEach {
-                val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
-                listOfDataHolder.add(dataHolderObj)
-            }
-
-
-        }
-        else{
-
-            history?.reversed()?.forEach {
-                val dataHolderObj=DataHolder(it.contentTitle,it.imgUrl,it.contentId,it.mediaType)
-                listOfDataHolder.add(dataHolderObj)
-            }
-        }
-
-
-      return listOfDataHolder
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -141,9 +144,58 @@ class YouFragment : Fragment() {
         views.recyclerviewHistory.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
         views.recyclerviewHistory.adapter=adapterForHistory
 
+
+//        adding click listners to profile
+        views.profileSectionContent.setOnClickListener {
+
+//            moving to profile fragment
+            nextfrag(ProfileFragment(),R.id.layout_for_sections,true)
+
+
+        }
+
+        views.switchAccountButton.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+            viewModel.logOut()
+
+        }
+
+//        adding click listeners to all buttons for view all history favorite and watch later content
+        addClickListenerToViewAllButtons(views.viewAllButtonHistory,"History")
+        addClickListenerToViewAllButtons(views.viewAllButtonWatchLater,"Watch Later")
+        addClickListenerToViewAllButtons(views.viewAllButtonFavorite,"Favorite")
+
+
+
+
     }
 
 
+    private fun addClickListenerToViewAllButtons(buttonView:Button, buttonFunction:String){
+
+        buttonView.setOnClickListener {
+            //            moving to new activity
+            val intent= Intent(requireActivity(),ActivityForDisplayingSearchResults::class.java)
+            intent.putExtra("YouFragmentSection",buttonFunction)
+            startActivity(intent)
+
+        }
+
+    }
+
+   fun nextfrag(fragObject:Fragment,layout:Int,addToStack:Boolean=false){
+
+       val fragManager= parentFragmentManager
+       val fragTransactions=fragManager.beginTransaction()
+
+        fragTransactions.replace(layout,fragObject)
+       if(addToStack){
+           fragTransactions.addToBackStack(null)
+       }
+
+       fragTransactions.commit()
+   }
 
 
 

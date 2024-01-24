@@ -2,11 +2,11 @@ package com.example.hommytv
 
 import android.app.SearchManager
 import android.content.Intent
-import android.content.SearchRecentSuggestionsProvider
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.SearchRecentSuggestions
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -40,11 +40,11 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
             hasAnItemBeingSelected.collect{
 
                 if(it){
-                    views.textView11.visibility=View.INVISIBLE
+                    views.statusBarTitle.visibility=View.INVISIBLE
                     views.recyclerViewForSearchResults.visibility=View.INVISIBLE
                 }
                 else if(numberOfFragInBackStack==0){
-                    views.textView11.visibility=View.VISIBLE
+                    views.statusBarTitle.visibility=View.VISIBLE
                     views.recyclerViewForSearchResults.visibility=View.VISIBLE
                 }
 
@@ -86,28 +86,75 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
                     ,ContentProviderForSearch.AUTHORITY,ContentProviderForSearch.MODE).saveRecentQuery(data,null)
 
 
+
+                viewModel.hasSearchRequestFinished.observe(this@ActivityForDisplayingSearchResults, Observer {
+
+
+                    if (it){
+
+                        views.loadingSpinnerForSearchResultsAcitvity.visibility= View.GONE
+                        views.recyclerViewForSearchResults.visibility=View.VISIBLE
+//                setting adapter data
+                        adapter.dataForSearch=viewModel.searchResults
+
+                        views.recyclerViewForSearchResults.adapter=adapter
+
+                    }
+
+                })
             }
 
+        }
+        else{
+            adapter.adapterNotForSearchResult=true
+            adapter.listTypeInYouFragment=intent.getStringExtra("YouFragmentSection")!!
+            views.statusBarTitle.text=intent.getStringExtra("YouFragmentSection")!!
+            if(intent.getStringExtra("YouFragmentSection")=="History"){
+
+                val data= viewModel.showHistory().observe(this@ActivityForDisplayingSearchResults,
+                    Observer {
+
+                       adapter.dataFromDatabase= YouFragment.toListOfDataHolder(history = it)
+                        adapter.notifyDataSetChanged()
+
+                    })
+            }
+            else if(intent.getStringExtra("YouFragmentSection")=="Favorite"){
+
+                val data= viewModel.dataInFavTable().observe(this@ActivityForDisplayingSearchResults,
+                    Observer {
+
+                        adapter.dataFromDatabase= YouFragment.toListOfDataHolder(fav = it)
+                        adapter.notifyDataSetChanged()
+
+
+                    })
+
+            }
+
+            else{
+                val data= viewModel.dataInWatchLaterTable().observe(this@ActivityForDisplayingSearchResults,
+                    Observer {
+
+                        adapter.dataFromDatabase= YouFragment.toListOfDataHolder(watchLater = it)
+                        adapter.notifyDataSetChanged()
+
+
+                    })
+
+            }
+
+
+            views.loadingSpinnerForSearchResultsAcitvity.visibility= View.GONE
+            views.recyclerViewForSearchResults.visibility=View.VISIBLE
+            views.recyclerViewForSearchResults.adapter=adapter
         }
 
 
 
-        viewModel.hasSearchRequestFinished.observe(this@ActivityForDisplayingSearchResults, Observer {
-
-
-            if (it){
-
-                views.loadingSpinnerForSearchResultsAcitvity.visibility= View.GONE
-                views.recyclerViewForSearchResults.visibility=View.VISIBLE
-//                setting adapter data
-                adapter.data=viewModel.searchResults
-
-                views.recyclerViewForSearchResults.adapter=adapter
-
-            }
-
-        })
 
 
     }
+
+
 }
