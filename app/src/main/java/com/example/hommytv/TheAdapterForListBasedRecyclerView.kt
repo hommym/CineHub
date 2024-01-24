@@ -166,7 +166,11 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
                 optionMenu.setOnClickListener {
 
 
-//   display context menu with add to favourite and watchlist as options(not yet implemented)
+
+                    val modalSheetObj= SearchResultsButtomSheet()
+
+                    modalSheetObj.show((context as ActivityForDisplayingSearchResults).supportFragmentManager,SearchResultsButtomSheet.TAG)
+
 
 
 
