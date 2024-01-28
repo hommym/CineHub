@@ -4,38 +4,217 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import com.example.hommytv.databinding.ButtomSheetForSearchResultBinding
+import com.example.hommytv.roomdatabase.FavTable
+import com.example.hommytv.roomdatabase.HistoryTable
+import com.example.hommytv.roomdatabase.WatchLaterTable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 
-class SearchResultsButtomSheet():  BottomSheetDialogFragment() {
+class SearchResultsButtomSheet(val dataBeingShown:String, val viewModelObj:TheViewModel
+, var dataInDatabase: DataHolder):  BottomSheetDialogFragment() {
 
 
     lateinit var favButton:TextView
-    lateinit var views:View
+//    lateinit var views:View
+    lateinit var views:ButtomSheetForSearchResultBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
-        views=inflater.inflate(R.layout.buttom_sheet_for_search_result, container, false)
-        favButton=views.findViewById(R.id.fav_button_modal_sheet)
-        return  views
+        views= ButtomSheetForSearchResultBinding.inflate(inflater, container, false)
+//        views=inflater.inflate(R.layout.buttom_sheet_for_search_result, container, false)
+//        favButton=views.findViewById(R.id.fav_button_modal_sheet)
+        return  views.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-      favButton.setOnClickListener {
+        if(dataBeingShown=="Search"){
+//          making delete button on the sheet disappear if the sheet is displayed in the search results activity
+            views.delete.visibility=View.GONE
 
-//          using this toast message for testing
-          Toast.makeText(requireActivity(),"is Working",Toast.LENGTH_SHORT).show()
-      }
+
+        }
+
+        else if(dataBeingShown=="Fav"){
+//changing the text in delete button and making the button for adding to fav disappear
+//// when the sheet is displayed in you fragment and item being clicked is from the fav table
+            views.delete.text="Remove from favorites"
+            views.favButtonModalSheet.visibility=View.GONE
+
+//            adding click listner to the delete button on the sheet to delete selected item from
+//            fav table
+            viewModelObj.dataInFavTable().observe(viewLifecycleOwner, Observer {dataInFav->
+
+
+                lifecycleScope.launch {
+                    views.delete.setOnClickListener {
+                        //          using this toast message for testing
+
+                        for (item in dataInFav){
+                            if(item.contentTitle==dataInDatabase.contentTitle){
+                                val data=FavTable(dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
+                                data.id=item.id
+                                lifecycleScope.launch {
+                                    viewModelObj.removeFromFav(data)
+                                    Toast.makeText(requireActivity(),"${data.contentTitle} has being Removed",Toast.LENGTH_SHORT).show()
+                                }
+
+                            }
+                        }
+
+
+                    }
+                }
+
+
+            })
+
+
+        }
+
+        else if(dataBeingShown=="History"){
+//changing the text in delete button
+//// when the sheet is displayed in you fragment and item being clicked is from the history table
+            views.delete.text="Remove from History"
+
+//            adding click listner to the delete button on the sheet to delete selected item from
+//            history table
+            viewModelObj.showHistory().observe(viewLifecycleOwner, Observer {dataInHistory->
+                lifecycleScope.launch {
+                    views.delete.setOnClickListener {
+
+
+                        for (item in dataInHistory){
+                            if(item.contentTitle==dataInDatabase.contentTitle){
+                                val data=HistoryTable(dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
+                                data.id=item.id
+                                lifecycleScope.launch {
+                                    viewModelObj.removeFromHistory(data)
+                                    Toast.makeText(requireActivity(),"${data.contentTitle} has being Removed From History",Toast.LENGTH_SHORT).show()
+                                }
+
+                            }
+                        }
+
+
+                    }
+                }
+            })
+
+
+        }
+
+        else{
+//making add to watch later button disappear
+//// when the sheet is displayed in you fragment and item being clicked is from the watch later table
+            views.addToWatchLater.visibility=View.GONE
+
+//            adding click listener to the delete button on the sheet to delete selected item from
+//            watch later table
+            viewModelObj.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer { dataInWatchLater->
+                lifecycleScope.launch {
+                    views.delete.setOnClickListener {
+                        //          using this toast message for testing
+
+                        for (item in dataInWatchLater){
+                            if(item.contentTitle==dataInDatabase.contentTitle){
+                                val data=WatchLaterTable(dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
+                                data.id=item.id
+                                lifecycleScope.launch {
+                                     viewModelObj.removeFromWatchLater(data)
+                                    Toast.makeText(requireActivity(),"${data.contentTitle} has being Removed ",Toast.LENGTH_SHORT).show()
+                                }
+
+                            }
+                        }
+
+
+                    }
+                }
+            })
+        }
+
+
+viewModelObj.dataInFavTable().observe(viewLifecycleOwner, Observer {dataInFav->
+
+//            adding click listener to the fav button on the sheet to add selected item from
+//            fav table
+    views.favButtonModalSheet.setOnClickListener {
+
+
+
+
+            lifecycleScope.launch {
+                for (items in dataInFav){
+
+                    if(items.contentTitle!= dataInDatabase.contentTitle && dataInFav[dataInFav.lastIndex]==items){
+                        val data= FavTable(dataInDatabase.contentTitle,
+                            dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
+                        viewModelObj.addToFav(data)
+                        Toast.makeText(requireActivity(),"Added to Fav",Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
+
+            }
+
+
+    }
+
+
+})
+
+
+        viewModelObj.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer {dataInWatchLaterTable->
+
+//            adding click listener to the watch later button on the sheet to add selected item from
+//            watch later table
+            views.addToWatchLater.setOnClickListener {
+
+                lifecycleScope.launch {
+
+                    for (items in dataInWatchLaterTable){
+
+                        if(items.contentTitle!= dataInDatabase.contentTitle && dataInWatchLaterTable[dataInWatchLaterTable.lastIndex]==items){
+                            val data= WatchLaterTable(dataInDatabase.contentTitle,
+                                dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
+                            viewModelObj.addToWatchLater(data)
+                            Toast.makeText(requireActivity(),"Added to Watch Later",Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
+                }
+
+
+            }
+        })
+
+
+//        features left to implement
+
+        views.playNextInQueue.setOnClickListener {
+            //          using this toast message for testing
+            Toast.makeText(requireActivity(),"is Working",Toast.LENGTH_SHORT).show()
+        }
+
+        views.saveToPlaylist.setOnClickListener {
+            //          using this toast message for testing
+            Toast.makeText(requireActivity(),"is Working",Toast.LENGTH_SHORT).show()
+        }
 
 
 

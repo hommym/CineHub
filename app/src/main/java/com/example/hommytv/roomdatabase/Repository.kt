@@ -51,4 +51,8 @@ class Repository( var databaseMethods:DatabaseMethods) {
         return databaseMethods.showHistory()
     }
 
+    suspend fun removeFromHistory(data:HistoryTable){
+        databaseMethods.removeFromHistory(data)
+    }
+
 }

@@ -13,7 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.hommytv.retrofitdataclasses.MoviesList
+import com.example.hommytv.roomdatabase.FavTable
 import com.example.hommytv.roomdatabase.HistoryTable
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 
 class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForListBasedRecyclerView.Holder>() {
@@ -45,7 +48,6 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-
 
 
 
@@ -164,12 +166,13 @@ class TheAdapterForListBasedRecyclerView (): RecyclerView.Adapter<TheAdapterForL
 //adding click listner to option icon
 
                 optionMenu.setOnClickListener {
-
-
-
-                    val modalSheetObj= SearchResultsButtomSheet()
-
+                   val data= DataHolder(movieTitle.text.toString(),currentData.poster_path,currentData.id,currentData.media_type)
+                    val modalSheetObj= SearchResultsButtomSheet("Search",(context as ActivityForDisplayingSearchResults).viewModel,data)
                     modalSheetObj.show((context as ActivityForDisplayingSearchResults).supportFragmentManager,SearchResultsButtomSheet.TAG)
+
+
+//                    val modalBottomSheetBehavior= (modalSheetObj.dialog as BottomSheetDialog).behavior
+//                    modalBottomSheetBehavior.state= BottomSheetBehavior.STATE_EXPANDED
 
 
 

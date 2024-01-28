@@ -17,7 +17,8 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
 
     var context:Context?=null
     var data= arrayListOf<DataHolder>()
-
+//    the purpose of dataBeingShown is to help differentiate between data from history and playlist
+    var dataBeingShown="History"
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -25,7 +26,7 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
         val title:TextView=itemView.findViewById(R.id.title_you_frag)
         val mediaType:TextView=itemView.findViewById(R.id.media_type_you_frag)
         val item:ConstraintLayout=itemView.findViewById(R.id.item_you_frag)
-
+        val optionMenu:ImageView=itemView.findViewById(R.id.menu_item_you_frag)
 
     }
 
@@ -78,6 +79,16 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
                 fragTransaction.addToBackStack(null)
 
                 fragTransaction.commit()
+
+            }
+
+
+            optionMenu.setOnClickListener {
+
+                val modalSheetObj= SearchResultsButtomSheet(dataBeingShown,(context as MainActivity).viewModel,currentData)
+                modalSheetObj.show((context as MainActivity).supportFragmentManager,SearchResultsButtomSheet.TAG)
+
+
 
             }
 

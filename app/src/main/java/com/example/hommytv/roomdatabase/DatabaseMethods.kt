@@ -35,5 +35,8 @@ interface DatabaseMethods {
      @Query("SELECT * FROM History_Table")
      fun showHistory():Flow<List<HistoryTable>>
 
+     @Delete
+    suspend fun removeFromHistory(data:HistoryTable)
+
 
 }

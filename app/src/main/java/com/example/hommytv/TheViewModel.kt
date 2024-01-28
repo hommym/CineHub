@@ -71,6 +71,11 @@ class TheViewModel(): ViewModel() {
         return  (applicationContext as App).repositoryObject.showHistory().asLiveData()
     }
 
+    suspend fun removeFromHistory(data:HistoryTable){
+        (applicationContext as App).repositoryObject.removeFromHistory(data)
+    }
+
+
     //    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
   val currentFragmentSectionsLayout:Fragment?
   get() = (context as MainActivity).supportFragmentManager.findFragmentById(R.id.layout_for_sections)

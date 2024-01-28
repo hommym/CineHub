@@ -105,6 +105,10 @@ class YouFragment : Fragment() {
         adapterForFav= AdapterForYouFragment()
         adapterForHistory=AdapterForYouFragment()
 
+//        setting up the data to the dataBeingShown
+        adapterForFav.dataBeingShown="Fav"
+        adapterForWatchLater.dataBeingShown="WatchLater"
+
         adapterForFav.context=requireActivity()
         adapterForWatchLater.context=requireActivity()
         adapterForHistory.context=requireActivity()
