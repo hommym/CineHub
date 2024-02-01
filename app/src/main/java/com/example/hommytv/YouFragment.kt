@@ -78,9 +78,9 @@ class YouFragment : Fragment() {
 
         lifecycleScope.launch {
 //            setting profile image if it exist
-            val dataStorObj= App.objectOFDataStore
+            val dataStoreObj= App.objectOFDataStore
 
-            dataStorObj.readData.collect{
+            dataStoreObj.readData.collect{
 
                 if(it[AppDataStore.isProfileSet]==true){
 
@@ -114,9 +114,22 @@ class YouFragment : Fragment() {
         adapterForHistory.context=requireActivity()
 
 
-//        changing the data type of data in fav table , watch later table and history tables
+//        changing the data type of data in fav table ,
+//        watch later table and history tables and setting to the appropraite adapter
         viewModel.dataInWatchLaterTable().observe(viewLifecycleOwner, Observer {
 
+
+            if(it.isEmpty()){
+                views.noWatchHistoryText.visibility=View.VISIBLE
+                views.viewAllButtonWatchLater.setOnClickListener(null)
+
+
+            }
+            else{
+                views.noWatchHistoryText.visibility=View.GONE
+//             adding click listener to button for viewing all watch later content
+                addClickListenerToViewAllButtons(views.viewAllButtonWatchLater,"Watch Later")
+            }
 
             adapterForWatchLater.data=toListOfDataHolder(watchLater = it)
             adapterForWatchLater.notifyDataSetChanged()
@@ -125,6 +138,16 @@ class YouFragment : Fragment() {
 
         viewModel.dataInFavTable().observe(viewLifecycleOwner, Observer {
 
+            if(it.isEmpty()){
+                views.noFavText.visibility=View.VISIBLE
+                views.viewAllButtonFavorite.setOnClickListener(null)
+            }
+            else{
+                views.noFavText.visibility=View.GONE
+//                adding click listener to button for viewing watch later
+                addClickListenerToViewAllButtons(views.viewAllButtonFavorite,"Favorite")
+
+            }
 
             adapterForFav.data=toListOfDataHolder(fav =it )
             adapterForFav.notifyDataSetChanged()
@@ -132,9 +155,21 @@ class YouFragment : Fragment() {
 
         viewModel.showHistory().observe(viewLifecycleOwner, Observer {
 
+            if(it.isEmpty()){
+                views.noHistoryText.visibility=View.VISIBLE
+                views.viewAllButtonHistory.setOnClickListener(null)
+            }
+            else{
+                views.noHistoryText.visibility=View.GONE
+                //        adding click listeners to the button for view all history
+                addClickListenerToViewAllButtons(views.viewAllButtonHistory,"History")
+            }
+
             adapterForHistory.data=toListOfDataHolder(history = it)
             adapterForHistory.notifyDataSetChanged()
+
         })
+
 
 
 //setting adapters to recycler views
@@ -165,10 +200,9 @@ class YouFragment : Fragment() {
 
         }
 
-//        adding click listeners to all buttons for view all history favorite and watch later content
-        addClickListenerToViewAllButtons(views.viewAllButtonHistory,"History")
-        addClickListenerToViewAllButtons(views.viewAllButtonWatchLater,"Watch Later")
-        addClickListenerToViewAllButtons(views.viewAllButtonFavorite,"Favorite")
+
+
+
 
 
 

@@ -157,15 +157,23 @@ viewModelObj.dataInFavTable().observe(viewLifecycleOwner, Observer {dataInFav->
 
 
             lifecycleScope.launch {
+                val data= FavTable(dataInDatabase.contentTitle,
+                    dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
+
+//                adds the data to fav table if fav table is not empty
                 for (items in dataInFav){
 
                     if(items.contentTitle!= dataInDatabase.contentTitle && dataInFav[dataInFav.lastIndex]==items){
-                        val data= FavTable(dataInDatabase.contentTitle,
-                            dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
+
                         viewModelObj.addToFav(data)
                         Toast.makeText(requireActivity(),"Added to Fav",Toast.LENGTH_SHORT).show()
                     }
 
+                }
+
+//                adds data to fav table if fav table is empty
+                if(dataInFav.isEmpty()){
+                    viewModelObj.addToFav(data)
                 }
 
 
@@ -185,16 +193,21 @@ viewModelObj.dataInFavTable().observe(viewLifecycleOwner, Observer {dataInFav->
             views.addToWatchLater.setOnClickListener {
 
                 lifecycleScope.launch {
-
+//                adds the data to watch later table if watch later table  is not empty
+                    val data= WatchLaterTable(dataInDatabase.contentTitle,
+                        dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
                     for (items in dataInWatchLaterTable){
 
                         if(items.contentTitle!= dataInDatabase.contentTitle && dataInWatchLaterTable[dataInWatchLaterTable.lastIndex]==items){
-                            val data= WatchLaterTable(dataInDatabase.contentTitle,
-                                dataInDatabase.imgUrl, dataInDatabase.contentId, dataInDatabase.mediaType)
+
                             viewModelObj.addToWatchLater(data)
                             Toast.makeText(requireActivity(),"Added to Watch Later",Toast.LENGTH_SHORT).show()
                         }
 
+                    }
+                    //adds the data to watch later table if watch later table  is empty
+                    if(dataInWatchLaterTable.isEmpty()){
+                        viewModelObj.addToWatchLater(data)
                     }
 
                 }
