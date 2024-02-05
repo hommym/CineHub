@@ -73,6 +73,9 @@ dependencies {
     })
     androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
 
+
+
+
     //circular image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
@@ -91,6 +94,11 @@ dependencies {
 
 //    Preference datastore
     implementation"androidx.datastore:datastore-preferences:1.0.0"
+
+
+//    Proto datastore
+    implementation"androidx.datastore:datastore:1.0.0"
+
 
     //    work manager
     implementation 'androidx.work:work-runtime-ktx:2.8.1'

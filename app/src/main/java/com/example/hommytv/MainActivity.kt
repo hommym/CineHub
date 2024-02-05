@@ -47,7 +47,7 @@ viewModel.applicationContext=application
 
 
 
-            lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.Main) {
 
                 App.objectOFDataStore.readData.collect{
 
