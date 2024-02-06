@@ -55,4 +55,23 @@ class Repository( var databaseMethods:DatabaseMethods) {
         databaseMethods.removeFromHistory(data)
     }
 
+
+    suspend fun addToPlaylistName(data:PlayListNameTable){
+
+        databaseMethods.addToPlaylistName(data)
+    }
+
+    fun showPlaylistNames():Flow<List<PlayListNameTable>>{
+
+        return databaseMethods.showPlaylistNames()
+    }
+
+
+    suspend fun addToPlaylistItem(data:PlayListItemTable){
+        databaseMethods.addToPlaylistItem(data)
+    }
+    fun showPlaylistitems():Flow<List<PlayListItemTable>>{
+        return  databaseMethods.showPlaylistItems()
+    }
+
 }

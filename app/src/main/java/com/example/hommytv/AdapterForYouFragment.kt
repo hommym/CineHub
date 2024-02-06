@@ -12,13 +12,20 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.hommytv.roomdatabase.PlayListNameTable
 
 class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>() {
 
     var context:Context?=null
     var data= arrayListOf<DataHolder>()
-//    the purpose of dataBeingShown is to help differentiate between data from history and playlist
+
+//    the purpose of dataBeingShown is to help differentiate between data from history,fav ,watchlater and playlist
     var dataBeingShown="History"
+
+//    playListTitle holds the title of a playlist if this adapter is used for the playlist recycler view
+    var playListTitle= listOf<PlayListNameTable>()
+
+
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -42,7 +49,13 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
          10
      }
         else{
-            data.size
+            if(dataBeingShown!="PlayList"){
+                data.size
+            }
+         else{
+             playListTitle.size
+            }
+
      }
 
 
@@ -51,46 +64,86 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val currentData= data[position]
         holder.apply {
-            val imgUri= currentData.imgUrl.toUri().buildUpon().scheme("https").build()
-            image.load(imgUri){
-                placeholder(R.drawable.baseline_image_24)
+
+
+
+
+
+
+            if(dataBeingShown!="PlayList"){
+
+                val imgUri= currentData.imgUrl.toUri().buildUpon().scheme("https").build()
+                image.load(imgUri){
+                    placeholder(R.drawable.baseline_image_24)
+
+                }
+
+                title.text=currentData.contentTitle
+                mediaType.text=currentData.mediaType
+                item.setOnClickListener {
+
+
+
+
+                    //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
+                    val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
+                    fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
+                    val nextFrag=SelectedMoviesOrSeriesFragment()
+                    val bundleObject= Bundle()
+                    bundleObject.putString("MediaType",currentData.mediaType)
+                    bundleObject.putString("Poster",currentData.imgUrl)
+                    bundleObject.putInt("Movie_Id",currentData.contentId)
+                    nextFrag.arguments=bundleObject
+
+                    fragTransaction.replace(R.id.layout_for_sections,nextFrag)
+                    fragTransaction.addToBackStack(null)
+
+                    fragTransaction.commit()
+
+                }
+
+                optionMenu.setOnClickListener {
+
+                    val modalSheetObj= SearchResultsButtomSheet(dataBeingShown,(context as MainActivity).viewModel,currentData)
+                    modalSheetObj.show((context as MainActivity).supportFragmentManager,SearchResultsButtomSheet.TAG)
+
+
+
+                }
+            }
+            else{
+
+                val currentPlayListName=playListTitle[position]
+//                conditions for setting image
+                if(currentPlayListName.numberOfItems==0){
+                    image.setImageResource(R.drawable.baseline_image_24)
+                }
+                else{
+                    val imgUri= data[0].imgUrl.toUri().buildUpon().scheme("https").build()
+                    image.load(imgUri){
+                        placeholder(R.drawable.baseline_image_24)
+
+                    }
+                }
+
+                title.text=currentPlayListName.name
+                mediaType.text=currentPlayListName.playListMediaType
+
+
+
+                item.setOnClickListener{
+//                    not yet implemented
+                }
+
+                optionMenu.setOnClickListener{
+//                    not yet implemented
+                }
 
             }
 
-            title.text=currentData.contentTitle
-            mediaType.text=currentData.mediaType
-
-            item.setOnClickListener {
 
 
 
-
-                //       changing fragment to details fragment(SelectedMovieOrSeriesFragment)
-                val fragTransaction= (context as MainActivity).supportFragmentManager.beginTransaction()
-                fragTransaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.slide_in,R.anim.slide_out)
-                val nextFrag=SelectedMoviesOrSeriesFragment()
-                val bundleObject= Bundle()
-                bundleObject.putString("MediaType",currentData.mediaType)
-                bundleObject.putString("Poster",currentData.imgUrl)
-                bundleObject.putInt("Movie_Id",currentData.contentId)
-                nextFrag.arguments=bundleObject
-
-                fragTransaction.replace(R.id.layout_for_sections,nextFrag)
-                fragTransaction.addToBackStack(null)
-
-                fragTransaction.commit()
-
-            }
-
-
-            optionMenu.setOnClickListener {
-
-                val modalSheetObj= SearchResultsButtomSheet(dataBeingShown,(context as MainActivity).viewModel,currentData)
-                modalSheetObj.show((context as MainActivity).supportFragmentManager,SearchResultsButtomSheet.TAG)
-
-
-
-            }
 
         }
     }

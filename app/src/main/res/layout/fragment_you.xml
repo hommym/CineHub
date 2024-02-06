@@ -189,7 +189,7 @@
                 android:layout_height="200dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="200dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -258,6 +258,94 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView31" />
+
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Playlist>"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="@+id/textView31"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerview_favorite" />
+
+            <ScrollView
+                android:id="@+id/scrollView2"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView33">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scrollbars="none"
+                    >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/floatingActionButton2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="#E82E2E2E"
+                            android:backgroundTint="#E82E2E2E"
+                            android:clickable="true"
+                            app:borderWidth="0dp"
+                            android:src="@drawable/add_icon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/recyclerView"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/textView34"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="New playlist"
+                            android:textColor="@color/white"
+                            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton2"
+                            app:layout_constraintStart_toStartOf="@+id/floatingActionButton2"
+                            app:layout_constraintTop_toBottomOf="@+id/floatingActionButton2" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="400dp"
+                            android:layout_height="198dp"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginBottom="1dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
+
+            </ScrollView>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="#E82E2E2E"
+                android:text="view all"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:cornerRadius="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView33"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView33" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
