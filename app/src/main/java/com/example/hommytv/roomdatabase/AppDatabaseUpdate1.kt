@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 
-@Database(entities = [FavTable::class,WatchLaterTable::class,HistoryTable::class],version=200)
+@Database(entities = [FavTable::class,WatchLaterTable::class,HistoryTable::class,PlayListNameTable::class,PlayListItemTable::class],version=200)
 abstract class AppDatabaseUpdate1(): RoomDatabase(){
     abstract fun databaseMethods():DatabaseMethods
 

@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 
 
-@Database(entities = [FavTable::class,WatchLaterTable::class,HistoryTable::class],version=100)
+@Database(entities = [FavTable::class,WatchLaterTable::class,HistoryTable::class,PlayListNameTable::class,PlayListItemTable::class],version=100)
 abstract class AppDatabase:RoomDatabase() {
 
 
