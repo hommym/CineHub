@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout6"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#E8040404"
+    tools:context=".PlayListCreationDialogbox">
+
+    <EditText
+        android:id="@+id/name_of_play_list"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="textPersonName"
+        android:textColor="#D3D3D3"
+        android:textColorHint="#A5A5A5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView36" />
+
+    <TextView
+        android:id="@+id/textView36"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="New playlist"
+        android:textColor="@color/white"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cancel_button_for_play_list_creation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="Cancel"
+        android:textColor="#0A21F3"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/create_playlist_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_of_play_list" />
+
+    <TextView
+        android:id="@+id/create_playlist_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="Create"
+        android:textColor="#254760"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cancel_button_for_play_list_creation" />
+</androidx.constraintlayout.widget.ConstraintLayout>
