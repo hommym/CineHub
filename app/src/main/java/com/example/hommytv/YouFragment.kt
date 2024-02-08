@@ -201,6 +201,14 @@ class YouFragment : Fragment() {
         }
 
 
+        views.addToPlayListFloatingButton.setOnClickListener {
+
+
+            val createPlayListDialogBox= PlayListCreationDialogbox()
+            createPlayListDialogBox.show(parentFragmentManager,"PlayListCreationDialogbox")
+        }
+
+
 
 
 

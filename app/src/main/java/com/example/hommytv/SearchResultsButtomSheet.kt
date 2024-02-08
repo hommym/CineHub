@@ -225,8 +225,11 @@ viewModelObj.dataInFavTable().observe(viewLifecycleOwner, Observer {dataInFav->
         }
 
         views.saveToPlaylist.setOnClickListener {
-            //          using this toast message for testing
-            Toast.makeText(requireActivity(),"is Working",Toast.LENGTH_SHORT).show()
+            //  Displaying sheet for playlist
+            val playListSheet=PlayListSheetFrag(viewModelObj,dataInDatabase)
+            playListSheet.show(parentFragmentManager,PlayListSheetFrag.TAG)
+           dismiss()
+
         }
 
 

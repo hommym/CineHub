@@ -14,9 +14,7 @@ import com.example.hommytv.retrofitdataclasses.ContentFromServer
 import com.example.hommytv.retrofitdataclasses.ContentType
 import com.example.hommytv.retrofitdataclasses.MovieDetails
 import com.example.hommytv.retrofitdataclasses.MoviesList
-import com.example.hommytv.roomdatabase.FavTable
-import com.example.hommytv.roomdatabase.HistoryTable
-import com.example.hommytv.roomdatabase.WatchLaterTable
+import com.example.hommytv.roomdatabase.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.sync.Mutex
@@ -74,6 +72,25 @@ class TheViewModel(): ViewModel() {
     suspend fun removeFromHistory(data:HistoryTable){
         (applicationContext as App).repositoryObject.removeFromHistory(data)
     }
+
+    suspend fun addToPlayListName(data:PlayListNameTable){
+        (applicationContext as App).repositoryObject.addToPlaylistName(data)
+    }
+
+    fun showPlayListName():LiveData<List<PlayListNameTable>>{
+        return    (applicationContext as App).repositoryObject.showPlaylistNames().asLiveData()
+    }
+
+
+    suspend fun addToPlayListItem(data:PlayListItemTable){
+        (applicationContext as App).repositoryObject.addToPlaylistItem(data)
+    }
+
+    fun showPlayListItem():LiveData<List<PlayListItemTable>>{
+        return    (applicationContext as App).repositoryObject.showPlaylistItems().asLiveData()
+    }
+
+
 
 
     //    currentFragmentSectionsLayout and currentFragmentMainLayout holds refernce to the current activity
