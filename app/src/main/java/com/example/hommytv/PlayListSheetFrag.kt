@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hommytv.databinding.FragmentPlayListSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -16,6 +18,7 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
         const val TAG = "PlayListModalSheet"
     }
     lateinit var views:FragmentPlayListSheetBinding
+    lateinit var playlistAdapter:PlayListNameAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +33,24 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+        (context as MainActivity).viewModel.showPlayListName().observe(viewLifecycleOwner, Observer {
+
+//            setting up playlist names recycler views only if there is data in it's table
+            if(it.isNotEmpty()){
+                playlistAdapter=PlayListNameAdapter(requireActivity(),it,dataInDatabase)
+                views.playlistNameRecyclerView.layoutManager=LinearLayoutManager(requireActivity())
+                views.playlistNameRecyclerView.adapter=playlistAdapter
+            }
+            else{
+               views.noPlaylistText.visibility=View.VISIBLE
+                views.doneButton.visibility=View.GONE
+            }
+
+
+
+        })
 
         views.addPlayList.setOnClickListener {
 
