@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hommytv.roomdatabase.PlayListItemTable
 import com.example.hommytv.roomdatabase.PlayListNameTable
+import kotlinx.coroutines.launch
 
-class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,var dataInDatabase: DataHolder): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
+class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,var dataInDatabase: DataHolder, val viewModel:TheViewModel): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
 
 
 
@@ -40,16 +44,42 @@ class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,v
         holder.checkBox.text=currentData.name
 
 
+        var dataToBeSavedInTable= PlayListItemTable(currentData.name,dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
+        viewModel.showPlayListItem().observe((context as AppCompatActivity), Observer {
+
+
+            for(item in it){
+
+                if(item.name==currentData.name && item.contentTitle== dataInDatabase.contentTitle){
+                    dataToBeSavedInTable=item
+                    break
+
+                }
+            }
+
+
+        })
         holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
 
-            val dataToBeSavedInTable= PlayListItemTable(currentData.name,dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
             if(isChecked){
-//                saving play list item in play_list_item_table(not yet implemented)
+
+                //                saving play list item in play_list_item_table
+                context.lifecycleScope.launch {
+                    viewModel.addToPlayListItem(dataToBeSavedInTable)
+                }
+
+
                 Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
 
             }
             else{
-//                removing play list item from  play_list_item_table(not yet implemented)
+//                removing play list item from  play_list_item_table
+                context.lifecycleScope.launch {
+                    viewModel.removePLaylistItem(dataToBeSavedInTable)
+
+                }
+
+
                 Toast.makeText(context,"Remove  PlayList",Toast.LENGTH_SHORT).show()
             }
 

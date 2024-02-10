@@ -40,7 +40,7 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
 
 //            setting up playlist names recycler views only if there is data in it's table
             if(it.isNotEmpty()){
-                playlistAdapter=PlayListNameAdapter(requireActivity(),it,dataInDatabase)
+                playlistAdapter=PlayListNameAdapter(requireActivity(),it,dataInDatabase,viewModel)
                 views.playlistNameRecyclerView.layoutManager=LinearLayoutManager(requireActivity())
                 views.playlistNameRecyclerView.adapter=playlistAdapter
             }
