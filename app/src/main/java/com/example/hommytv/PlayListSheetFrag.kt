@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hommytv.databinding.FragmentPlayListSheetBinding
@@ -19,6 +20,7 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
     }
     lateinit var views:FragmentPlayListSheetBinding
     lateinit var playlistAdapter:PlayListNameAdapter
+    val viewModel:TheViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +36,7 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        (context as MainActivity).viewModel.showPlayListName().observe(viewLifecycleOwner, Observer {
+        viewModel.showPlayListName().observe(viewLifecycleOwner, Observer {
 
 //            setting up playlist names recycler views only if there is data in it's table
             if(it.isNotEmpty()){
@@ -60,5 +61,8 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
         }
 
     }
+
+
+
 
 }
