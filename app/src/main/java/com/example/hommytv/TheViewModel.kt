@@ -93,6 +93,11 @@ class TheViewModel(): ViewModel() {
         (applicationContext as App).repositoryObject.removePlayListItem(data)
     }
 
+    suspend fun updatePlaylistName(data:PlayListNameTable){
+
+        (applicationContext as App).repositoryObject.updatePlaylistName(data)
+    }
+
 
 
 

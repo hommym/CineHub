@@ -66,6 +66,10 @@ class Repository( var databaseMethods:DatabaseMethods) {
         return databaseMethods.showPlaylistNames()
     }
 
+    suspend fun updatePlaylistName(data:PlayListNameTable){
+
+        databaseMethods.updatePlaylistName(data)
+    }
 
     suspend fun addToPlaylistItem(data:PlayListItemTable){
         databaseMethods.addToPlaylistItem(data)

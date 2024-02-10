@@ -1,9 +1,6 @@
 package com.example.hommytv.roomdatabase
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -47,6 +44,8 @@ interface DatabaseMethods {
     @Query("SELECT * FROM play_list_name_table")
     fun showPlaylistNames():Flow<List<PlayListNameTable>>
 
+    @Update
+    suspend fun updatePlaylistName(data:PlayListNameTable)
 
 
     @Insert
