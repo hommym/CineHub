@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.hommytv.databinding.FragmentPlayListCreationDialogboxBinding
 import com.example.hommytv.roomdatabase.PlayListNameTable
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class PlayListCreationDialogbox : DialogFragment() {
 
     lateinit var views:FragmentPlayListCreationDialogboxBinding
+    val viewModel:TheViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +39,7 @@ class PlayListCreationDialogbox : DialogFragment() {
          lifecycleScope.launch {
 
 //             adding data to play_lis_name_table
-             (requireActivity() as MainActivity).viewModel.addToPlayListName(PlayListNameTable(views.nameOfPlayList.text.toString(),"",0))
+             viewModel.addToPlayListName(PlayListNameTable(views.nameOfPlayList.text.toString(),"",0))
              dialog?.cancel()
          }
          }
