@@ -74,4 +74,8 @@ class Repository( var databaseMethods:DatabaseMethods) {
         return  databaseMethods.showPlaylistItems()
     }
 
+    suspend fun removePlayListItem(data:PlayListItemTable){
+        databaseMethods.removePlayListItem(data)
+    }
+
 }

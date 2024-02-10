@@ -54,4 +54,7 @@ interface DatabaseMethods {
     @Query("SELECT * FROM play_list_item_table")
     fun showPlaylistItems():Flow<List<PlayListItemTable>>
 
+    @Delete
+    suspend fun removePlayListItem(data:PlayListItemTable)
+
 }

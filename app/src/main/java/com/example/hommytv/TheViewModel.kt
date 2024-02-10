@@ -89,6 +89,9 @@ class TheViewModel(): ViewModel() {
     fun showPlayListItem():LiveData<List<PlayListItemTable>>{
         return    (applicationContext as App).repositoryObject.showPlaylistItems().asLiveData()
     }
+    suspend fun removePLaylistItem(data:PlayListItemTable){
+        (applicationContext as App).repositoryObject.removePlayListItem(data)
+    }
 
 
 
