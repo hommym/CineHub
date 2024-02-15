@@ -86,6 +86,7 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
                     //                saving play list item in play_list_item_table
                     context.lifecycleScope.launch {
                         viewModel.addToPlayListItem(dataToBeSavedInTable)
+                        currentData.imageToShowOnPlaylist=dataToBeSavedInTable.imgUrl
                         currentData.numberOfItems++
                         hasPlayListBeenSelected=true
                         selectedPlayList=dataToBeSavedInTable.name
