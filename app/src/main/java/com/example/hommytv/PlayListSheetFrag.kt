@@ -7,9 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hommytv.databinding.FragmentPlayListSheetBinding
+import com.example.hommytv.roomdatabase.PlayListNameTable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) : BottomSheetDialogFragment() {
@@ -36,11 +41,21 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
         super.onViewCreated(view, savedInstanceState)
 
 
+        var updatedPlaylistNameFromPlayListNameAdapter:PlayListNameTable?=null
+        val flowForUpdatedPlayListName=MutableSharedFlow<PlayListNameTable>()
+
+       lifecycleScope.launch {
+           flowForUpdatedPlayListName.collect{
+
+                    updatedPlaylistNameFromPlayListNameAdapter=it
+
+           }
+       }
         viewModel.showPlayListName().observe(viewLifecycleOwner, Observer {
 
 //            setting up playlist names recycler views only if there is data in it's table
             if(it.isNotEmpty()){
-                playlistAdapter=PlayListNameAdapter(requireActivity(),it,dataInDatabase,viewModel)
+                playlistAdapter=PlayListNameAdapter(requireActivity(),it,dataInDatabase,viewModel, flowForUpdatedPlaylistName = flowForUpdatedPlayListName)
                 views.playlistNameRecyclerView.layoutManager=LinearLayoutManager(requireActivity())
                 views.playlistNameRecyclerView.adapter=playlistAdapter
             }
@@ -58,6 +73,21 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
             val createPlayListDialogBox= PlayListCreationDialogbox()
             createPlayListDialogBox.show(parentFragmentManager,"PlayListCreationDialogbox")
             dismiss()
+        }
+
+
+
+        views.doneButton.setOnClickListener {
+
+        //  updating a selected playlist in play_list_name_table and also for closing this  sheet(not yet impelemented)
+            lifecycleScope.launch {
+                if(updatedPlaylistNameFromPlayListNameAdapter!=null){
+                    viewModel.updatePlaylistName(updatedPlaylistNameFromPlayListNameAdapter!!)
+                }
+
+            }
+            dismiss()
+
         }
 
     }

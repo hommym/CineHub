@@ -12,9 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hommytv.roomdatabase.PlayListItemTable
 import com.example.hommytv.roomdatabase.PlayListNameTable
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
-class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,var dataInDatabase: DataHolder, val viewModel:TheViewModel): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
+class PlayListNameAdapter(val context:Context,
+var data:List<PlayListNameTable>,var dataInDatabase: DataHolder,
+val viewModel:TheViewModel,
+var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flowForUpdatedPlaylistName:MutableSharedFlow<PlayListNameTable>): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
 
 
 
@@ -44,6 +48,16 @@ class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,v
         holder.checkBox.text=currentData.name
 
 
+        if(currentData.playListMediaType==""){
+            currentData.playListMediaType=dataInDatabase.mediaType
+
+
+        }
+        else if(currentData.playListMediaType!=dataInDatabase.mediaType && !currentData.playListMediaType.contains('&')){
+            currentData.playListMediaType="${currentData.playListMediaType}&${dataInDatabase.mediaType}"
+
+        }
+
         var dataToBeSavedInTable= PlayListItemTable(currentData.name,dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
         viewModel.showPlayListItem().observe((context as AppCompatActivity), Observer {
 
@@ -61,29 +75,49 @@ class PlayListNameAdapter(val context:Context,var data:List<PlayListNameTable>,v
         })
         holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
 
-            if(isChecked){
 
-                //                saving play list item in play_list_item_table
-                context.lifecycleScope.launch {
-                    viewModel.addToPlayListItem(dataToBeSavedInTable)
-                }
+            if(hasPlayListBeenSelected&&selectedPlayList!=currentData.name){
 
-
-                Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
-
+                buttonView.isChecked=false
             }
             else{
-//                removing play list item from  play_list_item_table
-                context.lifecycleScope.launch {
-                    viewModel.removePLaylistItem(dataToBeSavedInTable)
+                if(isChecked){
+
+                    //                saving play list item in play_list_item_table
+                    context.lifecycleScope.launch {
+                        viewModel.addToPlayListItem(dataToBeSavedInTable)
+                        currentData.numberOfItems++
+                        hasPlayListBeenSelected=true
+                        selectedPlayList=dataToBeSavedInTable.name
+
+                    }
+
+
+                    Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
 
                 }
+                else{
+//                removing play list item from  play_list_item_table
+                    context.lifecycleScope.launch {
+                        viewModel.removePLaylistItem(dataToBeSavedInTable)
+                        currentData.numberOfItems--
+                        hasPlayListBeenSelected=false
+                        selectedPlayList=""
+                    }
 
 
-                Toast.makeText(context,"Remove  PlayList",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,"Remove  PlayList",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
+            context.lifecycleScope.launch {
+                flowForUpdatedPlaylistName.emit(currentData)
             }
 
         }
+
+
 
     }
 
