@@ -189,13 +189,10 @@
                 android:layout_height="200dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="200dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView31"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/textView31" />
 
             <Button
                 android:id="@+id/view_all_button_favorite"
@@ -270,68 +267,48 @@
                 app:layout_constraintStart_toStartOf="@+id/textView31"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerview_favorite" />
 
-            <ScrollView
-                android:id="@+id/scrollView2"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/playlist_recycler_view"
                 android:layout_width="0dp"
-                android:layout_height="200dp"
+                android:layout_height="198dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:scrollbars="none"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/recyclerview_favorite"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/recyclerview_favorite"
+                app:layout_constraintTop_toBottomOf="@+id/textView33"
+                 />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_to_playList_floating_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#E82E2E2E"
+                android:backgroundTint="#E82E2E2E"
+                android:clickable="true"
+                android:src="@drawable/add_icon"
+                android:visibility="gone"
+                app:borderWidth="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/playlist_recycler_view"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView33">
+                app:layout_constraintHorizontal_bias="0.489"
+                app:layout_constraintStart_toStartOf="@+id/playlist_recycler_view"
+                app:layout_constraintTop_toTopOf="@+id/playlist_recycler_view"
+                app:tint="@color/white"
+                tools:visibility="visible" />
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scrollbars="none"
-                    >
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp">
-
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/add_to_playList_floating_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="16dp"
-                            android:background="#E82E2E2E"
-                            android:backgroundTint="#E82E2E2E"
-                            android:clickable="true"
-                            app:borderWidth="0dp"
-                            android:src="@drawable/add_icon"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/recyclerView"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/white" />
-
-                        <TextView
-                            android:id="@+id/textView34"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="New playlist"
-                            android:textColor="@color/white"
-                            app:layout_constraintEnd_toEndOf="@+id/add_to_playList_floating_button"
-                            app:layout_constraintStart_toStartOf="@+id/add_to_playList_floating_button"
-                            app:layout_constraintTop_toBottomOf="@+id/add_to_playList_floating_button" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
-                            android:layout_width="400dp"
-                            android:layout_height="198dp"
-                            android:layout_marginStart="1dp"
-                            android:layout_marginBottom="1dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </HorizontalScrollView>
-
-            </ScrollView>
+            <TextView
+                android:id="@+id/add_to_playlist_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New playlist"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/add_to_playList_floating_button"
+                app:layout_constraintStart_toStartOf="@+id/add_to_playList_floating_button"
+                app:layout_constraintTop_toBottomOf="@+id/add_to_playList_floating_button"
+                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/button"

@@ -25,6 +25,7 @@ class YouFragment : Fragment() {
     lateinit var adapterForHistory:AdapterForYouFragment
     lateinit var adapterForFav:AdapterForYouFragment
     lateinit var adapterForWatchLater:AdapterForYouFragment
+    lateinit var adapterForPlaylist:AdapterForYouFragment
     val viewModel:TheViewModel by activityViewModels()
 
     companion object{
@@ -101,18 +102,23 @@ class YouFragment : Fragment() {
 
         }
 
+
+
+
         adapterForWatchLater= AdapterForYouFragment()
         adapterForFav= AdapterForYouFragment()
         adapterForHistory=AdapterForYouFragment()
+        adapterForPlaylist= AdapterForYouFragment()
 
 //        setting up the data to the dataBeingShown
         adapterForFav.dataBeingShown="Fav"
         adapterForWatchLater.dataBeingShown="WatchLater"
+        adapterForPlaylist.dataBeingShown="PlayList"
 
         adapterForFav.context=requireActivity()
         adapterForWatchLater.context=requireActivity()
         adapterForHistory.context=requireActivity()
-
+        adapterForPlaylist.context=requireActivity()
 
 //        changing the data type of data in fav table ,
 //        watch later table and history tables and setting to the appropraite adapter
@@ -170,7 +176,22 @@ class YouFragment : Fragment() {
 
         })
 
+        viewModel.showPlayListName().observe(viewLifecycleOwner, Observer {
 
+            if(it.isNotEmpty()){
+
+                views.addToPlayListFloatingButton.visibility=View.GONE
+                views.addToPlaylistText.visibility=View.GONE
+                views.playlistRecyclerView.visibility=View.VISIBLE
+                adapterForPlaylist.playListTitle=it
+                adapterForPlaylist.notifyDataSetChanged()
+
+            }
+            else{
+              views.addToPlayListFloatingButton.visibility=View.VISIBLE
+              views.addToPlaylistText.visibility=View.VISIBLE
+            }
+        })
 
 //setting adapters to recycler views
         views.recyclerviewFavorite.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
@@ -183,6 +204,8 @@ class YouFragment : Fragment() {
         views.recyclerviewHistory.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
         views.recyclerviewHistory.adapter=adapterForHistory
 
+        views.playlistRecyclerView.layoutManager=StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+        views.playlistRecyclerView.adapter=adapterForPlaylist
 
 //        adding click listners to profile
         views.profileSectionContent.setOnClickListener {

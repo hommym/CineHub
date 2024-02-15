@@ -62,7 +62,7 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val currentData= data[position]
+
         holder.apply {
 
 
@@ -71,7 +71,7 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
 
 
             if(dataBeingShown!="PlayList"){
-
+                val currentData= data[position]
                 val imgUri= currentData.imgUrl.toUri().buildUpon().scheme("https").build()
                 image.load(imgUri){
                     placeholder(R.drawable.baseline_image_24)
@@ -119,7 +119,7 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
                     image.setImageResource(R.drawable.baseline_image_24)
                 }
                 else{
-                    val imgUri= data[0].imgUrl.toUri().buildUpon().scheme("https").build()
+                    val imgUri= currentPlayListName.imageToShowOnPlaylist.toUri().buildUpon().scheme("https").build()
                     image.load(imgUri){
                         placeholder(R.drawable.baseline_image_24)
 
