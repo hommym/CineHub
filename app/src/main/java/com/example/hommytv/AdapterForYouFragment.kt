@@ -1,6 +1,7 @@
 package com.example.hommytv
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -155,6 +156,10 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
 
                 item.setOnClickListener{
 //                    not yet implemented
+                    val intent= Intent(context,ActivityForDisplayingSearchResults::class.java)
+                    intent.putExtra("YouFragmentSection","Playlist")
+                    intent.putExtra("PlaylistName",currentPlayListName.name)
+                    context?.startActivity(intent)
                 }
 
                 optionMenu.setOnClickListener{

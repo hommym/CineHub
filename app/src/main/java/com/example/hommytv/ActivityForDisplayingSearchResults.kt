@@ -131,6 +131,30 @@ class ActivityForDisplayingSearchResults : AppCompatActivity() {
                     })
 
             }
+            else if(intent.getStringExtra("YouFragmentSection")=="Playlist"){
+
+
+                viewModel.showPlayListItem().observe(this@ActivityForDisplayingSearchResults,
+                    Observer {
+
+                        val data= arrayListOf<DataHolder>()
+
+                        it.forEach {item->
+                            if(intent.getStringExtra("PlaylistName")==item.name){
+
+                                    data.add(DataHolder(item.contentTitle,item.imgUrl,item.contentId,item.mediaType))
+                            }
+                        }
+
+                        adapter.dataFromDatabase=data
+                        adapter.notifyDataSetChanged()
+
+
+
+                    })
+
+
+            }
 
             else{
                 val data= viewModel.dataInWatchLaterTable().observe(this@ActivityForDisplayingSearchResults,
