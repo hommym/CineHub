@@ -8,13 +8,41 @@
     android:background="#E8040404"
     android:foreground="?attr/selectableItemBackground">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img2_you_frag"
+                android:layout_width="195dp"
+                android:layout_height="110dp"
+                android:scaleType="fitXY"
+                tools:srcCompat="@tools:sample/avatars" />
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,4 +91,6 @@
         app:layout_constraintStart_toEndOf="@+id/title_you_frag"
         app:layout_constraintTop_toBottomOf="@+id/cardView3"
         app:srcCompat="@drawable/ellipsis_vertical_solid" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

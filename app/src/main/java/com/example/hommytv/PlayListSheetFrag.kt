@@ -42,7 +42,7 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
 
 
         var updatedPlaylistNameFromPlayListNameAdapter:PlayListNameTable?=null
-        val flowForUpdatedPlayListName=MutableSharedFlow<PlayListNameTable>()
+        val flowForUpdatedPlayListName=MutableSharedFlow<PlayListNameTable?>()
 
        lifecycleScope.launch {
            flowForUpdatedPlayListName.collect{

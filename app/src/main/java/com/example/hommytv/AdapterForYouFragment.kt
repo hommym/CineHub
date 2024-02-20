@@ -29,7 +29,9 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        val image:ImageView= itemView.findViewById(R.id.img_you_frag)
+        val image2:ImageView= itemView.findViewById(R.id.img_you_frag)
+        val image1:ImageView=itemView.findViewById(R.id.img2_you_frag)
+        val topImageLayout:ConstraintLayout=itemView.findViewById(R.id.top_image_layout)
         val title:TextView=itemView.findViewById(R.id.title_you_frag)
         val mediaType:TextView=itemView.findViewById(R.id.media_type_you_frag)
         val item:ConstraintLayout=itemView.findViewById(R.id.item_you_frag)
@@ -73,7 +75,7 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
             if(dataBeingShown!="PlayList"){
                 val currentData= data[position]
                 val imgUri= currentData.imgUrl.toUri().buildUpon().scheme("https").build()
-                image.load(imgUri){
+                image2.load(imgUri){
                     placeholder(R.drawable.baseline_image_24)
 
                 }
@@ -112,18 +114,38 @@ class AdapterForYouFragment :RecyclerView.Adapter<AdapterForYouFragment.Holder>(
                 }
             }
             else{
+//                making top image visible
+                topImageLayout.visibility=View.VISIBLE
 
                 val currentPlayListName=playListTitle[position]
+
+//                setting default images to playlist with no data
+                image2.setImageResource(R.drawable.baseline_image_24)
+                image1.setImageResource(R.drawable.baseline_image_24)
+
 //                conditions for setting image
-                if(currentPlayListName.numberOfItems==0){
-                    image.setImageResource(R.drawable.baseline_image_24)
-                }
-                else{
+                if(currentPlayListName.numberOfItems==1){
                     val imgUri= currentPlayListName.imageToShowOnPlaylist.toUri().buildUpon().scheme("https").build()
-                    image.load(imgUri){
+                    image2.load(imgUri){
+                        placeholder(R.drawable.baseline_image_24)
+
+
+                    }
+                }
+                else if(currentPlayListName.numberOfItems>1){
+                    val imgUri= currentPlayListName.imageToShowOnPlaylist.toUri().buildUpon().scheme("https").build()
+                    image2.load(imgUri){
                         placeholder(R.drawable.baseline_image_24)
 
                     }
+
+                    val imgUri1= currentPlayListName.imageToShowOnPlaylist2.toUri().buildUpon().scheme("https").build()
+                    image1.load(imgUri1){
+                        placeholder(R.drawable.baseline_image_24)
+
+                    }
+
+
                 }
 
                 title.text=currentPlayListName.name

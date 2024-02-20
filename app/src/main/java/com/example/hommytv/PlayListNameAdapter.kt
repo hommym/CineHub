@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class PlayListNameAdapter(val context:Context,
 var data:List<PlayListNameTable>,var dataInDatabase: DataHolder,
 val viewModel:TheViewModel,
-var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flowForUpdatedPlaylistName:MutableSharedFlow<PlayListNameTable>): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
+var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flowForUpdatedPlaylistName:MutableSharedFlow<PlayListNameTable?>): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
 
 
 
@@ -86,10 +86,14 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
                     //                saving play list item in play_list_item_table
                     context.lifecycleScope.launch {
                         viewModel.addToPlayListItem(dataToBeSavedInTable)
+                        currentData.imageToShowOnPlaylist2=currentData.imageToShowOnPlaylist
                         currentData.imageToShowOnPlaylist=dataToBeSavedInTable.imgUrl
                         currentData.numberOfItems++
                         hasPlayListBeenSelected=true
                         selectedPlayList=dataToBeSavedInTable.name
+                        context.lifecycleScope.launch {
+                            flowForUpdatedPlaylistName.emit(currentData)
+                        }
 
                     }
 
@@ -104,6 +108,9 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
                         currentData.numberOfItems--
                         hasPlayListBeenSelected=false
                         selectedPlayList=""
+                        context.lifecycleScope.launch {
+                            flowForUpdatedPlaylistName.emit(null)
+                        }
                     }
 
 
@@ -112,9 +119,7 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
             }
 
 
-            context.lifecycleScope.launch {
-                flowForUpdatedPlaylistName.emit(currentData)
-            }
+
 
         }
 

@@ -39,7 +39,7 @@ class PlayListCreationDialogbox : DialogFragment() {
          lifecycleScope.launch {
 
 //             adding data to play_lis_name_table
-             viewModel.addToPlayListName(PlayListNameTable(views.nameOfPlayList.text.toString(),"",0,""))
+             viewModel.addToPlayListName(PlayListNameTable(views.nameOfPlayList.text.toString(),"",0,"",""))
              dialog?.cancel()
          }
          }
