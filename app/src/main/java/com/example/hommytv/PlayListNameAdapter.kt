@@ -65,7 +65,7 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
             for(item in it){
 
                 if(item.name==currentData.name && item.contentTitle== dataInDatabase.contentTitle){
-                    dataToBeSavedInTable=item
+//                    dataToBeSavedInTable=item
                     break
 
                 }
