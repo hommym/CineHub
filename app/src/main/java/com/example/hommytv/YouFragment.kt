@@ -183,7 +183,7 @@ class YouFragment : Fragment() {
                 views.addToPlayListFloatingButton.visibility=View.GONE
                 views.addToPlaylistText.visibility=View.GONE
                 views.playlistRecyclerView.visibility=View.VISIBLE
-                adapterForPlaylist.playListTitle=it
+                adapterForPlaylist.playListTitle=it.reversed()
                 adapterForPlaylist.notifyDataSetChanged()
 
             }

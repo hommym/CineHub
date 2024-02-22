@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hommytv.databinding.FragmentPlayListSheetBinding
+import com.example.hommytv.roomdatabase.PlayListItemTable
 import com.example.hommytv.roomdatabase.PlayListNameTable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +25,9 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
 
     companion object {
         const val TAG = "PlayListModalSheet"
+
+
+        data class PlaylistNameAndItemHolder(val currentPlaylistName:PlayListNameTable,val playlistItemToStore:PlayListItemTable)
     }
     lateinit var views:FragmentPlayListSheetBinding
     lateinit var playlistAdapter:PlayListNameAdapter
@@ -40,9 +46,21 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var dataSavedInTable:List<PlayListItemTable>? =null
 
-        var updatedPlaylistNameFromPlayListNameAdapter:PlayListNameTable?=null
-        val flowForUpdatedPlayListName=MutableSharedFlow<PlayListNameTable?>()
+        val liveDataObj=   viewModel.showPlayListItem()
+
+        val observer=Observer <List<PlayListItemTable>>{
+            // setting data in play_list_item_table to dataSavedInTable
+             dataSavedInTable=it
+
+        }
+
+        liveDataObj.observe((context as AppCompatActivity), observer)
+
+        var updatedPlaylistNameFromPlayListNameAdapter:PlaylistNameAndItemHolder?=null
+
+        val flowForUpdatedPlayListName=MutableSharedFlow<PlaylistNameAndItemHolder?>()
 
        lifecycleScope.launch {
            flowForUpdatedPlayListName.collect{
@@ -79,10 +97,36 @@ class PlayListSheetFrag(viewModel:TheViewModel,var dataInDatabase: DataHolder) :
 
         views.doneButton.setOnClickListener {
 
-        //  updating a selected playlist in play_list_name_table and also for closing this  sheet(not yet impelemented)
+        //  updating a selected pl aylist in play_list_name_table and also for closing this  sheet(not yet impelemented)
             lifecycleScope.launch {
+
                 if(updatedPlaylistNameFromPlayListNameAdapter!=null){
-                    viewModel.updatePlaylistName(updatedPlaylistNameFromPlayListNameAdapter!!)
+                    var indexOfCurrentDataInPlaylistItemTable=0
+                for(item in dataSavedInTable!!){
+
+                    if(item.name== updatedPlaylistNameFromPlayListNameAdapter!!.currentPlaylistName.name &&
+                        item.contentTitle== updatedPlaylistNameFromPlayListNameAdapter!!.playlistItemToStore.contentTitle){
+
+                        break
+                    }
+                    else if(dataSavedInTable!!.lastIndex==indexOfCurrentDataInPlaylistItemTable ){
+//                        saving and updating data in play_list_item_table and play_list_name_table respectively
+                        viewModel.addToPlayListItem(updatedPlaylistNameFromPlayListNameAdapter!!.playlistItemToStore)
+
+                        viewModel.updatePlaylistName(updatedPlaylistNameFromPlayListNameAdapter!!.currentPlaylistName)
+
+                        Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
+                    }
+                    indexOfCurrentDataInPlaylistItemTable++
+            }
+                if(dataSavedInTable!!.isEmpty()){
+                    //                        saving and updating data in play_list_item_table and play_list_name_table respectively
+                    viewModel.addToPlayListItem(updatedPlaylistNameFromPlayListNameAdapter!!.playlistItemToStore)
+
+                    viewModel.updatePlaylistName(updatedPlaylistNameFromPlayListNameAdapter!!.currentPlaylistName)
+
+                    Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
+                }
                 }
 
             }
