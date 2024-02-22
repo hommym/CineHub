@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class PlayListNameAdapter(val context:Context,
 var data:List<PlayListNameTable>,var dataInDatabase: DataHolder,
 val viewModel:TheViewModel,
-var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flowForUpdatedPlaylistName:MutableSharedFlow<PlayListNameTable?>): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
+var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flowForUpdatedPlaylistName:MutableSharedFlow<PlayListSheetFrag.Companion.PlaylistNameAndItemHolder?>): RecyclerView.Adapter<PlayListNameAdapter.Holder>()  {
 
 
 
@@ -58,21 +58,9 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
 
         }
 
-        var dataToBeSavedInTable= PlayListItemTable(currentData.name,dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
-        viewModel.showPlayListItem().observe((context as AppCompatActivity), Observer {
+        val dataToBeSavedInTable= PlayListItemTable(currentData.name,dataInDatabase.contentTitle,dataInDatabase.imgUrl,dataInDatabase.contentId,dataInDatabase.mediaType)
 
 
-            for(item in it){
-
-                if(item.name==currentData.name && item.contentTitle== dataInDatabase.contentTitle){
-//                    dataToBeSavedInTable=item
-                    break
-
-                }
-            }
-
-
-        })
         holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
 
 
@@ -84,37 +72,28 @@ var hasPlayListBeenSelected:Boolean=false,var selectedPlayList:String="",val flo
                 if(isChecked){
 
                     //                saving play list item in play_list_item_table
-                    context.lifecycleScope.launch {
-                        viewModel.addToPlayListItem(dataToBeSavedInTable)
                         currentData.imageToShowOnPlaylist2=currentData.imageToShowOnPlaylist
                         currentData.imageToShowOnPlaylist=dataToBeSavedInTable.imgUrl
                         currentData.numberOfItems++
                         hasPlayListBeenSelected=true
                         selectedPlayList=dataToBeSavedInTable.name
-                        context.lifecycleScope.launch {
-                            flowForUpdatedPlaylistName.emit(currentData)
+                    (context as AppCompatActivity).lifecycleScope.launch {
+
+                                flowForUpdatedPlaylistName.emit(PlayListSheetFrag.Companion.PlaylistNameAndItemHolder(currentData,dataToBeSavedInTable))
                         }
 
-                    }
-
-
-                    Toast.makeText(context,"Added PlayList",Toast.LENGTH_SHORT).show()
 
                 }
                 else{
 //                removing play list item from  play_list_item_table
-                    context.lifecycleScope.launch {
-                        viewModel.removePLaylistItem(dataToBeSavedInTable)
+
                         currentData.numberOfItems--
                         hasPlayListBeenSelected=false
                         selectedPlayList=""
-                        context.lifecycleScope.launch {
+                    (context as AppCompatActivity).lifecycleScope.launch {
                             flowForUpdatedPlaylistName.emit(null)
                         }
-                    }
 
-
-                    Toast.makeText(context,"Remove  PlayList",Toast.LENGTH_SHORT).show()
                 }
             }
 
